@@ -8,6 +8,7 @@ using namespace std;
 class Subject
 {
     private:
+        string _id;
         string _code;
         string _name;
         int _credits;
@@ -15,6 +16,7 @@ class Subject
         set<string> _corequisites;
     public:
         Subject(
+            const string id,
             const string code,
             const string name,
             const int credits,

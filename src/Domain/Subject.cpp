@@ -3,12 +3,14 @@
 #include "Subject.h"
 
 Subject::Subject(
+    const string id,
     const string code,
     const string name,
     const int credits,
     const set<string> prerequisites,
     const set<string> corequisites
 ) {
+    this->_id = id;
     this->_code = code;
     this->_name = name;
     this->_credits = credits;
