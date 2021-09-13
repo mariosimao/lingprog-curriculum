@@ -1,6 +1,7 @@
 #include <pqxx/pqxx>
 #include <set>
 #include <string>
+#include "./../../Domain/DomainException.h"
 #include "./../../Domain/Subject.h"
 #include "SqlSubjectRepository.h"
 
@@ -47,7 +48,7 @@ Subject SqlSubjectRepository::findById(const string subjectId)
     pqxx::result corequisiteResult  = transaction.exec_prepared("find_subject_corequisites", subjectId);
 
     if (subjectResult.size() == 0) {
-        throw runtime_error("Subject not found");
+        throw DomainException("Subject not found");
     }
 
     set<string> prerequisites;
