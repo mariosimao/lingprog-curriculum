@@ -1,6 +1,7 @@
 #include <string>
 #include <set>
 #include "Subject.h"
+#include "DomainException.h"
 
 Subject::Subject(
     const string id,
@@ -50,6 +51,10 @@ set<string> Subject::getCorequisites()
 
 void Subject::addPrerequisite(const string prerequisite)
 {
+    if (prerequisite == this->_id) {
+        throw DomainException("Cannot add same subject as prerequisite.");
+    }
+
     this->_prerequisites.insert(prerequisite);
 }
 
