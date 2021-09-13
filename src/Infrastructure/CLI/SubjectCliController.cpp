@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "SubjectCliController.h"
+#include "../../Application/AddPrerequisiteHandler.h"
 #include "../../Application/RegisterSubjectHandler.h"
 #include "../../Domain/ISubjectRepository.h"
 
@@ -33,6 +34,23 @@ void SubjectCliController::registerSubject(vector<string> arguments)
     cout << "Name:\t\t" << name << endl;
     cout << "Code:\t\t" << code << endl;
     cout << "Credits:\t" << credits << endl;
+
+    return;
+}
+
+void SubjectCliController::addPrerequisite(vector<string> arguments)
+{
+    if (arguments.size() < 2) {
+        throw "Missing arguments";
+    }
+
+    string subjectId = arguments[0];
+    string prerequisiteId = arguments[1];
+
+    AddPrerequisiteHandler handler(this->_subjectRepository);
+    handler.execute(subjectId, prerequisiteId);
+
+    cout << "Prerequisite successfully added." << endl << endl;
 
     return;
 }

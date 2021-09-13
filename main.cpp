@@ -13,20 +13,24 @@ int main(int argc, char const *argv[])
         string connectionString = "host=localhost port=5432 dbname=my_curriculum user=my_curriculum password=password";
         pqxx::connection connection(connectionString.c_str());
 
-        vector<string> arguments(argv, argv + argc);
+        SqlSubjectRepository subjectRepository(&connection);
+        SubjectCliController subjectController(&subjectRepository);
 
+        vector<string> arguments(argv, argv + argc);
         string command = arguments[1];
         arguments.erase(arguments.begin());
         arguments.erase(arguments.begin());
 
         if (command == "register-subject") {
-            SqlSubjectRepository subjectRepository(&connection);
-            SubjectCliController subjectController(&subjectRepository);
-
             subjectController.registerSubject(arguments);
+        } else if (command == "add-prerequisite") {
+            subjectController.addPrerequisite(arguments);
         }
     } catch(const char* e) {
         cerr << e << endl;
+        return 1;
+    } catch (const exception &e) {
+        cerr << e.what() << endl;
         return 1;
     }
 

@@ -13,5 +13,6 @@ class SubjectCliController
     public:
         SubjectCliController(ISubjectRepository* subjectRepository);
         void registerSubject(vector<string> arguments);
+        void addPrerequisite(vector<string> arguments);
 };
 #endif
