@@ -28,8 +28,9 @@ class StudentSemester
         time_t getStartDate();
         time_t getEndDate();
         vector<SubjectAttempt*> getSubjectsAttempts();
-        void planSubjectAttempt(Subject* subject);
-        void addGrade(string subjectCode, float grade);
-        void addProfessor(string subjectCode, string professor);
+        SubjectAttempt* findSubjectAttempt(string subjectId);
+        void planSubjectAttempt(string attemptId, Subject* subject);
+        void addGrade(string subjectId, float grade);
+        void addProfessor(string subjectId, string professorName);
 };
 #endif

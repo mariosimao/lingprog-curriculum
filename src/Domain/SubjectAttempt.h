@@ -15,10 +15,10 @@ class SubjectAttempt
     public:
         SubjectAttempt(string id, Subject* subject);
         string getId();
-        string getSubjectCode();
+        Subject* getSubject();
         string getProfessor();
-        string getGrade();
-        void addProfessor(string professor);
+        float getGrade();
+        void addProfessor(string professorName);
         void addGrade(float grade);
 };
 #endif

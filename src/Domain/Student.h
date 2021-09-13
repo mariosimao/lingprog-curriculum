@@ -3,8 +3,7 @@
 #include <ctime>
 #include <string>
 #include <vector>
-#include "Curriculum.h"
-#include "Subject.h"
+// #include "Subject.h"
 #include "StudentSemester.h"
 
 using namespace std;
@@ -26,9 +25,15 @@ class Student
         string getName();
         string getCurriculumId();
         vector<StudentSemester*> getStudentSemesters();
-        void planSemester(string name, time_t startDate, time_t endDate);
-        void planSubjectAttempt(string semesterId, Subject* subject);
-        void addGrade(string semesterId, string subjectCode, float grade);
-        void addProfessor(string semesterId, string subjectCode, string professor);
+        StudentSemester* findStudentSemester(string semesterId);
+        void planSemester(
+            string semesterId,
+            string name,
+            time_t startDate,
+            time_t endDate
+        );
+        void planSubjectAttempt(string attemptId, string semesterId, Subject* subject);
+        void addGrade(string semesterId, string subjectId, float grade);
+        void addProfessor(string semesterId, string subjectId, string professor);
 };
 #endif
