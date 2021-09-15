@@ -61,6 +61,17 @@ void Student::planSemester(
     if (semesterExist) {
         throw DomainException("Semester already exists.");
     }
+
+    boost::gregorian::date_period period(startDate, endDate);
+    for (StudentSemester* semester: this->_semesters) {
+        boost::gregorian::date_period auxPeriod(
+            semester->getStartDate(),
+            semester->getEndDate()
+        );
+
+        if (period.intersects(auxPeriod)) {
+            throw DomainException("Semester overlaps with previously registered semester.");
+        }
     }
 
     StudentSemester* semester = new StudentSemester(semesterId, name, startDate, endDate);
