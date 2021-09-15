@@ -48,7 +48,7 @@ Subject SqlSubjectRepository::findById(const string subjectId)
     pqxx::result corequisiteResult  = transaction.exec_prepared("find_subject_corequisites", subjectId);
 
     if (subjectResult.size() == 0) {
-        throw DomainException("Subject not found");
+        throw DomainException(string("Subject not found"));
     }
 
     set<string> prerequisites;

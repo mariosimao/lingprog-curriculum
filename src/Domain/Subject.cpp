@@ -52,7 +52,7 @@ set<string> Subject::getCorequisites()
 void Subject::addPrerequisite(const string prerequisite)
 {
     if (prerequisite == this->_id) {
-        throw DomainException("Cannot add same subject as prerequisite.");
+        throw DomainException(string("Cannot add same subject as prerequisite."));
     }
 
     this->_prerequisites.insert(prerequisite);
