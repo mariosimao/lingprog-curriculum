@@ -31,7 +31,6 @@ class Student
         StudentSemester* findStudentSemester(string semesterId);
         void planSemester(
             string semesterId,
-            string name,
             boost::gregorian::date startDate,
             boost::gregorian::date endDate
         );

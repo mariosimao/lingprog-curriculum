@@ -53,7 +53,6 @@ StudentSemester* Student::findStudentSemester(string semesterId)
 
 void Student::planSemester(
     string semesterId,
-    string name,
     boost::gregorian::date startDate,
     boost::gregorian::date endDate
 ) {
@@ -74,9 +73,13 @@ void Student::planSemester(
         }
     }
 
-    StudentSemester* semester = new StudentSemester(semesterId, name, startDate, endDate);
+    int year = startDate.year();
+    int semester = (startDate.month() <= 6) ? 1 : 2;
+    string name = to_string(year) + "." + to_string(semester);
 
-    this->_semesters.push_back(semester);
+    StudentSemester* studentSemester = new StudentSemester(semesterId, name, startDate, endDate);
+
+    this->_semesters.push_back(studentSemester);
 }
 
 void Student::planSubjectAttempt(

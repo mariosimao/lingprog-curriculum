@@ -33,27 +33,22 @@ void StudentCliController::registerStudent(vector<string> arguments)
 
 void StudentCliController::planSemester(vector<string> arguments)
 {
-    if (arguments.size() < 2) {
+    if (arguments.size() < 3) {
         throw "Missing arguments";
     }
 
     string studentId = arguments[0];
-    string name      = arguments[1];
-    string startDate = arguments[2];
-    string endDate   = arguments[3];
+    string startDate = arguments[1];
+    string endDate   = arguments[2];
 
     boost::gregorian::date start(boost::gregorian::from_simple_string(startDate));
     boost::gregorian::date end(boost::gregorian::from_simple_string(endDate));
 
     PlanSemester handler(this->_studentRepository);
 
-    string id = handler.execute(studentId, name, start, end);
+    string id = handler.execute(studentId, start, end);
 
-    cout << "Semester successfully planned" << "\n" << "\n";
-    cout << "Id:\t\t" << id << "\n";
-    cout << "Name:\t\t" << name << "\n";
-    cout << "Start:\t\t" << startDate << "\n";
-    cout << "End:\t\t" << endDate << "\n";
+    cout << "Semester successfully planned.\n";
 
     return;
 }

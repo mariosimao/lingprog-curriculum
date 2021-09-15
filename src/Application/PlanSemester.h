@@ -14,7 +14,6 @@ class PlanSemester
         PlanSemester(IStudentRepository* studentRepository);
         string execute(
             string studentId,
-            string name,
             boost::gregorian::date startDate,
             boost::gregorian::date endDate
         );
