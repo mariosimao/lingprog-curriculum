@@ -8,6 +8,18 @@ Student::Student(string id, string name, string curriculumId)
     this->_curriculumId = curriculumId;
 }
 
+Student::Student(
+    string id,
+    string name,
+    string curriculumId,
+    vector<StudentSemester*> semesters
+) {
+    this->_id = id;
+    this->_name = name;
+    this->_curriculumId = curriculumId;
+    this->_semesters = semesters;
+}
+
 string Student::getId()
 {
     return this->_id;
@@ -45,14 +57,14 @@ void Student::planSemester(
     boost::gregorian::date startDate,
     boost::gregorian::date endDate
 ) {
-    bool semesterExist = (this->findStudentSemester(semesterId) == NULL);
+    bool semesterExist = (this->findStudentSemester(semesterId) != NULL);
     if (semesterExist) {
         throw DomainException(string("Semester already exists."));
     }
 
-    StudentSemester semester(semesterId, name, startDate, endDate);
+    StudentSemester* semester = new StudentSemester(semesterId, name, startDate, endDate);
 
-    this->_semesters.push_back(&semester);
+    this->_semesters.push_back(semester);
 }
 
 void Student::planSubjectAttempt(

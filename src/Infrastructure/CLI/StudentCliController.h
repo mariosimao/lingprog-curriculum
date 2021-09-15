@@ -13,5 +13,6 @@ class StudentCliController
     public:
         StudentCliController(IStudentRepository* studentRepository);
         void registerStudent(vector<string> arguments);
+        void planSemester(vector<string> arguments);
 };
 #endif
