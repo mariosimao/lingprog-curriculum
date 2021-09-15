@@ -22,9 +22,12 @@ void StudentCliController::registerStudent(vector<string> arguments)
     RegisterStudent handler(this->_studentRepository);
     string id = handler.execute(name, curriculumId);
 
-    cout << "Student successfully registered" << endl << endl;
-    cout << "Id:\t\t" << id << endl;
-    cout << "Name:\t\t" << name << endl;
+    cout << "Student successfully registered" << "\n" << "\n";
+    cout << "Id:\t\t" << id << "\n";
+    cout << "Name:\t\t" << name << "\n";
+
+    return;
+}
 
     return;
 }

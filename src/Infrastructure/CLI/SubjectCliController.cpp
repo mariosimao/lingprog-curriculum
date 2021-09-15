@@ -29,11 +29,11 @@ void SubjectCliController::registerSubject(vector<string> arguments)
     RegisterSubjectHandler handler(this->_subjectRepository);
     string id = handler.execute(code, name, credits, prerequisites, corequisites);
 
-    cout << "Subject successfully registered" << endl << endl;
-    cout << "Id:\t\t" << id << endl;
-    cout << "Name:\t\t" << name << endl;
-    cout << "Code:\t\t" << code << endl;
-    cout << "Credits:\t" << credits << endl;
+    cout << "Subject successfully registered" << "\n" << "\n";
+    cout << "Id:\t\t" << id << "\n";
+    cout << "Name:\t\t" << name << "\n";
+    cout << "Code:\t\t" << code << "\n";
+    cout << "Credits:\t" << credits << "\n";
 
     return;
 }
@@ -50,7 +50,7 @@ void SubjectCliController::addPrerequisite(vector<string> arguments)
     AddPrerequisiteHandler handler(this->_subjectRepository);
     handler.execute(subjectId, prerequisiteId);
 
-    cout << "Prerequisite successfully added." << endl << endl;
+    cout << "Prerequisite successfully added." << "\n" << "\n";
 
     return;
 }
