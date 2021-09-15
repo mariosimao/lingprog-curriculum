@@ -47,8 +47,6 @@ void StudentCliController::planSemester(vector<string> arguments)
 
     PlanSemester handler(this->_studentRepository);
 
-    cout << "Before execute" << "\n";
-
     string id = handler.execute(studentId, name, start, end);
 
     cout << "Semester successfully planned" << "\n" << "\n";
