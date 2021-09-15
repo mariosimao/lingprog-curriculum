@@ -4,8 +4,8 @@
 StudentSemester::StudentSemester(
     string id,
     string name,
-    time_t startDate,
-    time_t endDate
+    boost::gregorian::date startDate,
+    boost::gregorian::date endDate
 ) {
     if (startDate > endDate) {
         throw DomainException("Semester should start before ending.");
@@ -27,12 +27,12 @@ string StudentSemester::getName()
     return this->_name;
 }
 
-time_t StudentSemester::getStartDate()
+boost::gregorian::date StudentSemester::getStartDate()
 {
     return this->_startDate;
 }
 
-time_t StudentSemester::getEndDate()
+boost::gregorian::date StudentSemester::getEndDate()
 {
     return this->_endDate;
 }

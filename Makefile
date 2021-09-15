@@ -10,7 +10,7 @@ ALL_CPP_FILES := $(call rwildcard,src/,*.cpp)
 EXECUTABLE = c
 
 all:
-	$(LD) $(LFLAGS) -g -o $(EXECUTABLE) $(INCLUDES) -lpqxx -lpq
+	$(LD) $(LFLAGS) -g -o $(EXECUTABLE) $(INCLUDES) -lpqxx -lpq -lboost_date_time
 
 clean:
 	rm -rf *.o $(EXECUTABLE)

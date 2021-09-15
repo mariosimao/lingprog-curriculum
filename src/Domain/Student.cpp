@@ -42,8 +42,8 @@ StudentSemester* Student::findStudentSemester(string semesterId)
 void Student::planSemester(
     string semesterId,
     string name,
-    time_t startDate,
-    time_t endDate
+    boost::gregorian::date startDate,
+    boost::gregorian::date endDate
 ) {
     bool semesterExist = (this->findStudentSemester(semesterId) == NULL);
     if (semesterExist) {
