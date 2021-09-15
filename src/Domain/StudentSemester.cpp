@@ -8,7 +8,7 @@ StudentSemester::StudentSemester(
     boost::gregorian::date endDate
 ) {
     if (startDate > endDate) {
-        throw DomainException(string("Semester should start before ending."));
+        throw DomainException("Semester should start before ending.");
     }
 
     this->_id = id;
@@ -57,7 +57,7 @@ void StudentSemester::planSubjectAttempt(string attemptId, Subject* subject)
 {
     SubjectAttempt* searchedAttempt = this->findSubjectAttempt(subject->getId());
     if (searchedAttempt != NULL) {
-        throw DomainException(string("Cannot add subject on same semester twice."));
+        throw DomainException("Cannot add subject on same semester twice.");
     }
 
     SubjectAttempt attempt(attemptId, subject);
@@ -69,7 +69,7 @@ void StudentSemester::addGrade(string subjectId, float grade)
 {
     SubjectAttempt* attempt = this->findSubjectAttempt(subjectId);
     if (attempt == NULL) {
-        throw DomainException(string("Subject is not planned on this semester."));
+        throw DomainException("Subject is not planned on this semester.");
     }
 
     attempt->addGrade(grade);
@@ -79,7 +79,7 @@ void StudentSemester::addProfessor(string subjectId, string professorName)
 {
     SubjectAttempt* attempt = this->findSubjectAttempt(subjectId);
     if (attempt == NULL) {
-        throw DomainException(string("Subject is not planned on this semester."));
+        throw DomainException("Subject is not planned on this semester.");
     }
 
     attempt->addProfessor(professorName);

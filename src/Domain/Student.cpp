@@ -59,7 +59,8 @@ void Student::planSemester(
 ) {
     bool semesterExist = (this->findStudentSemester(semesterId) != NULL);
     if (semesterExist) {
-        throw DomainException(string("Semester already exists."));
+        throw DomainException("Semester already exists.");
+    }
     }
 
     StudentSemester* semester = new StudentSemester(semesterId, name, startDate, endDate);
@@ -74,7 +75,7 @@ void Student::planSubjectAttempt(
 ) {
     StudentSemester* semester = this->findStudentSemester(semesterId);
     if (semester == NULL) {
-        throw DomainException(string("Semester does not exist."));
+        throw DomainException("Semester does not exist.");
     }
 
     semester->planSubjectAttempt(attemptId, subject);
@@ -84,7 +85,7 @@ void Student::addGrade(string semesterId, string subjectId, float grade)
 {
     StudentSemester* semester = this->findStudentSemester(semesterId);
     if (semester == NULL) {
-        throw DomainException(string("Semester does not exist."));
+        throw DomainException("Semester does not exist.");
     }
 
     semester->addGrade(subjectId, grade);
@@ -94,7 +95,7 @@ void Student::addProfessor(string semesterId, string subjectId, string professor
 {
     StudentSemester* semester = this->findStudentSemester(semesterId);
     if (semester == NULL) {
-        throw DomainException(string("Semester does not exist."));
+        throw DomainException("Semester does not exist.");
     }
 
     semester->addProfessor(subjectId, professor);

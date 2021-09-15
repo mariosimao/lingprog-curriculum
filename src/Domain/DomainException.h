@@ -5,11 +5,11 @@
 
 using namespace std;
 
-class DomainException: public exception
+class DomainException
 {
     public:
-        string message;
+        string _message;
         DomainException(string message);
-        const char* what();
+        string what();
 };
 #endif

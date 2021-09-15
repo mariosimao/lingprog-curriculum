@@ -2,10 +2,10 @@
 
 DomainException::DomainException(string message)
 {
-    this->message = message;
+    this->_message = message;
 }
 
-const char* DomainException::what()
+string DomainException::what()
 {
-    return this->message.c_str();
+    return this->_message;
 }

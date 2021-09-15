@@ -6,6 +6,7 @@
 #include "./src/Infrastructure/Persistence/SqlSubjectRepository.h"
 #include "./src/Infrastructure/CLI/StudentCliController.h"
 #include "./src/Infrastructure/CLI/SubjectCliController.h"
+#include "./src/Domain/DomainException.h"
 
 using namespace std;
 
@@ -32,12 +33,11 @@ int main(int argc, char const *argv[])
             subjectController.addPrerequisite(arguments);
         } else if (command == "register-student") {
             studentController.registerStudent(arguments);
+        } else if (command == "plan-semester") {
+            studentController.planSemester(arguments);
         }
-    } catch(const char* e) {
-        cerr << e << endl;
-        return 1;
-    } catch (const exception &e) {
-        cerr << e.what() << endl;
+    } catch (DomainException e) {
+        cerr << e.what() << "\n";
         return 1;
     }
 
