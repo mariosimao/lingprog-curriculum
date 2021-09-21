@@ -20,7 +20,7 @@ string RegisterSubjectHandler::execute(
 ) {
     string id = boost::uuids::to_string(boost::uuids::random_generator()());
 
-    Subject subject(id, code, name, credits, prerequisites, corequisites);
+    Subject* subject = new Subject(id, code, name, credits, prerequisites, corequisites);
 
     this->_subjectRepository->save(subject);
 

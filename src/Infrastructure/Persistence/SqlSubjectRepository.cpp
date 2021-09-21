@@ -13,7 +13,7 @@ SqlSubjectRepository::SqlSubjectRepository(
     this->_connection = connection;
 }
 
-Subject SqlSubjectRepository::findById(const string subjectId)
+Subject* SqlSubjectRepository::findById(const string subjectId)
 {
     this->_connection->prepare(
         "find_subject",
@@ -61,7 +61,7 @@ Subject SqlSubjectRepository::findById(const string subjectId)
         corequisites.insert(row[0].c_str());
     }
 
-    Subject subject(
+    Subject* subject = new Subject(
         subjectId,
         string(subjectResult[0][0].c_str()),
         string(subjectResult[0][1].c_str()),
@@ -73,7 +73,7 @@ Subject SqlSubjectRepository::findById(const string subjectId)
     return subject;
 }
 
-void SqlSubjectRepository::save(Subject subject)
+void SqlSubjectRepository::save(Subject* subject)
 {
     this->_connection->prepare(
         "save_subject",
@@ -106,14 +106,14 @@ void SqlSubjectRepository::save(Subject subject)
     try {
         transaction.exec_prepared(
             "save_subject",
-            subject.getId(),
-            subject.getCode(),
-            subject.getName(),
-            subject.getCredits()
+            subject->getId(),
+            subject->getCode(),
+            subject->getName(),
+            subject->getCredits()
         );
 
         string prerequisitesIds;
-        for (auto requisiteId: subject.getPrerequisites()) {
+        for (auto requisiteId: subject->getPrerequisites()) {
             if (prerequisitesIds.empty()) {
                 prerequisitesIds = "'" + transaction.esc(requisiteId) + "'";
             } else {
@@ -122,13 +122,13 @@ void SqlSubjectRepository::save(Subject subject)
 
             transaction.exec_prepared(
                 "upsert_subject_prerequisites",
-                subject.getId(),
+                subject->getId(),
                 requisiteId
             );
         }
 
         string corequisitesIds;
-        for (auto requisiteId: subject.getCorequisites()) {
+        for (auto requisiteId: subject->getCorequisites()) {
             if (corequisitesIds.empty()) {
                 corequisitesIds = "'" + transaction.esc(requisiteId) + "'";
             } else {
@@ -137,7 +137,7 @@ void SqlSubjectRepository::save(Subject subject)
 
             transaction.exec_prepared(
                 "upsert_subject_corequisites",
-                subject.getId(),
+                subject->getId(),
                 requisiteId
             );
         }
@@ -145,26 +145,26 @@ void SqlSubjectRepository::save(Subject subject)
         if (!prerequisitesIds.empty()) {
             transaction.exec(
                 "DELETE FROM subject_prerequisite sp "
-                "WHERE sp.subject_id = '" + transaction.esc(subject.getId()) + "' "
+                "WHERE sp.subject_id = '" + transaction.esc(subject->getId()) + "' "
                 "AND sp.prerequisite_id NOT IN (" + prerequisitesIds + ");"
             );
         } else {
             transaction.exec(
                 "DELETE FROM subject_prerequisite sp "
-                "WHERE sp.subject_id = '" + transaction.esc(subject.getId()) + "';"
+                "WHERE sp.subject_id = '" + transaction.esc(subject->getId()) + "';"
             );
         }
 
         if (!corequisitesIds.empty()) {
             transaction.exec(
                 "DELETE FROM subject_corequisite "
-                "WHERE subject_id = '" + transaction.esc(subject.getId()) + "' "
+                "WHERE subject_id = '" + transaction.esc(subject->getId()) + "' "
                 "AND corequisite_id NOT IN (" + corequisitesIds + ");"
             );
         } else {
             transaction.exec(
                 "DELETE FROM subject_corequisite "
-                "WHERE subject_id = '" + transaction.esc(subject.getId()) + "';"
+                "WHERE subject_id = '" + transaction.esc(subject->getId()) + "';"
             );
         }
     } catch(pqxx::failure const &e) {
