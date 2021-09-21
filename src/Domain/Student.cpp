@@ -1,38 +1,22 @@
 #include "DomainException.h"
 #include "Student.h"
 
-Student::Student(string id, string name, string curriculumId)
+Student::Student(string id)
 {
     this->_id = id;
-    this->_name = name;
-    this->_curriculumId = curriculumId;
 }
 
 Student::Student(
     string id,
-    string name,
-    string curriculumId,
     vector<StudentSemester*> semesters
 ) {
     this->_id = id;
-    this->_name = name;
-    this->_curriculumId = curriculumId;
     this->_semesters = semesters;
 }
 
 string Student::getId()
 {
     return this->_id;
-}
-
-string Student::getName()
-{
-    return this->_name;
-}
-
-string Student::getCurriculumId()
-{
-    return this->_curriculumId;
 }
 
 vector<StudentSemester*> Student::getStudentSemesters()

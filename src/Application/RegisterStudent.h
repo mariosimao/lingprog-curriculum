@@ -11,6 +11,6 @@ class RegisterStudent
         IStudentRepository* _studentRepository;
     public:
         RegisterStudent(IStudentRepository* studentRepository);
-        string execute(string name, string curriculumId);
+        string execute(string studentId);
 };
 #endif

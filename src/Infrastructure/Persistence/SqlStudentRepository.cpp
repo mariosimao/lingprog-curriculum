@@ -18,8 +18,7 @@ Student SqlStudentRepository::findById(string studentId)
     this->_connection->prepare(
         "find_student",
         "SELECT \
-            s.name, \
-            s.curriculum_id \
+            s.id \
         FROM student s \
         WHERE s.id = $1"
     );
@@ -70,9 +69,7 @@ Student SqlStudentRepository::findById(string studentId)
     }
 
     Student student(
-        studentId,
         studentResult[0][0].c_str(),
-        studentResult[0][1].c_str(),
         semesters
     );
 
@@ -83,13 +80,9 @@ void SqlStudentRepository::save(Student student)
 {
     this->_connection->prepare(
         "save_student",
-        "INSERT INTO student (id, name, curriculum_id) \
-        VALUES ($1, $2, $3) \
-        ON CONFLICT ON CONSTRAINT student_pk DO \
-        UPDATE SET \
-        name = $2, \
-        curriculum_id = $3 \
-        WHERE student.id = $1;"
+        "INSERT INTO student (id) \
+        VALUES ($1) \
+        ON CONFLICT DO NOTHING;"
     );
 
     this->_connection->prepare(
@@ -128,11 +121,8 @@ void SqlStudentRepository::save(Student student)
     try {
         transaction.exec_prepared(
             "save_student",
-            student.getId(),
-            student.getName(),
-            student.getCurriculumId()
+            student.getId()
         );
-
 
         string semestersIds;
         for (auto semester: student.getStudentSemesters()) {

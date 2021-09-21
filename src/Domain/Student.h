@@ -13,20 +13,14 @@ class Student
 {
     private:
         string _id;
-        string _name;
-        string _curriculumId;
         vector<StudentSemester*> _semesters;
     public:
-        Student(string id, string name, string curriculumId);
+        Student(string id);
         Student(
             string id,
-            string name,
-            string curriculumId,
             vector<StudentSemester*> semesters
         );
         string getId();
-        string getName();
-        string getCurriculumId();
         vector<StudentSemester*> getStudentSemesters();
         StudentSemester* findStudentSemester(string semesterId);
         void planSemester(
