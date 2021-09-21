@@ -60,9 +60,9 @@ void StudentSemester::planSubjectAttempt(string attemptId, Subject* subject)
         throw DomainException("Cannot add subject on same semester twice.");
     }
 
-    SubjectAttempt attempt(attemptId, subject);
+    SubjectAttempt* attempt = new SubjectAttempt(attemptId, subject);
 
-    this->_subjects.push_back(&attempt);
+    this->_subjects.push_back(attempt);
 }
 
 void StudentSemester::addGrade(string subjectId, float grade)

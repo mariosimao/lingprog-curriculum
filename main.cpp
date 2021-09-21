@@ -19,9 +19,12 @@ int main(int argc, char const *argv[])
         SqlStudentRepository studentRepository(&connection);
         SqlSubjectRepository subjectRepository(&connection);
 
-        StudentCliController studentController(&studentRepository);
+        StudentCliController studentController(&studentRepository, &subjectRepository);
         SubjectCliController subjectController(&subjectRepository);
 
+        if (argc < 2) {
+            throw runtime_error("Too few arguments");
+        }
         vector<string> arguments(argv, argv + argc);
         string command = arguments[1];
         arguments.erase(arguments.begin());
@@ -35,8 +38,13 @@ int main(int argc, char const *argv[])
             studentController.registerStudent(arguments);
         } else if (command == "plan-semester") {
             studentController.planSemester(arguments);
+        } else if (command == "plan-subject") {
+            studentController.planSubjectAttempt(arguments);
         }
     } catch (DomainException e) {
+        cerr << e.what() << "\n";
+        return 1;
+    } catch (runtime_error &e) {
         cerr << e.what() << "\n";
         return 1;
     }

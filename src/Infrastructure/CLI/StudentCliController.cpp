@@ -2,31 +2,31 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include "StudentCliController.h"
 #include "../../Application/PlanSemester.h"
+#include "../../Application/PlanSubjectAttempt.h"
 #include "../../Application/RegisterStudent.h"
-#include "../../Domain/IStudentRepository.h"
 
 using namespace std;
 
-StudentCliController::StudentCliController(IStudentRepository* studentRepository)
-{
+StudentCliController::StudentCliController(
+    IStudentRepository* studentRepository,
+    ISubjectRepository* subjectRepository
+) {
     this->_studentRepository = studentRepository;
+    this->_subjectRepository = subjectRepository;
 }
 
 void StudentCliController::registerStudent(vector<string> arguments)
 {
-    if (arguments.size() < 2) {
+    if (arguments.size() < 1) {
         throw "Missing arguments";
     }
 
-    string name = arguments[0];
-    string curriculumId = arguments[1];
+    string studentId = arguments[0];
 
     RegisterStudent handler(this->_studentRepository);
-    string id = handler.execute(name, curriculumId);
+    string id = handler.execute(studentId);
 
     cout << "Student successfully registered" << "\n" << "\n";
-    cout << "Id:\t\t" << id << "\n";
-    cout << "Name:\t\t" << name << "\n";
 
     return;
 }
@@ -49,6 +49,25 @@ void StudentCliController::planSemester(vector<string> arguments)
     string id = handler.execute(studentId, start, end);
 
     cout << "Semester successfully planned.\n";
+
+    return;
+}
+
+void StudentCliController::planSubjectAttempt(vector<string> arguments)
+{
+    if (arguments.size() < 3) {
+        throw "Missing arguments";
+    }
+
+    string studentId = arguments[0];
+    string semesterId = arguments[1];
+    string subjectId = arguments[2];
+
+    PlanSubjectAttempt handler(this->_studentRepository, this->_subjectRepository);
+
+    string id = handler.execute(studentId, semesterId, subjectId);
+
+    cout << "Subject successfully planned.\n";
 
     return;
 }

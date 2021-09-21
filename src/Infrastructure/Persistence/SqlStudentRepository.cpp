@@ -103,18 +103,24 @@ void SqlStudentRepository::save(Student student)
         WHERE student_semester.id = $1;"
     );
 
-    // this->_connection->prepare(
-    //     "upsert_student_subject",
-    //     "INSERT INTO subject_attempt (id, semester_id, subject_code, professor, grade) \
-    //     VALUES ($1, $2, $3, $4, $5) \
-    //     ON CONFLICT ON CONSTRAINT student_semester_student_id_fk DO \
-    //     UPDATE SET \
-    //     semester_id = $2, \
-    //     subject_code = $3, \
-    //     professor = $4, \
-    //     grade = $5 \
-    //     WHERE subject_attempt.id = $1;"
-    // );
+    this->_connection->prepare(
+        "upsert_student_subject",
+        "INSERT INTO subject_attempt (id, semester_id, subject_id, professor, grade) \
+        VALUES ( \
+            $1, \
+            $2, \
+            $3, \
+            CASE WHEN $4 = '' THEN NULL ELSE $4 END, \
+            CASE WHEN $5 = -1 THEN NULL ELSE $5 END \
+        ) \
+        ON CONFLICT ON CONSTRAINT subject_attempt_pK DO \
+        UPDATE SET \
+        semester_id = $2, \
+        subject_id = $3, \
+        professor = $4, \
+        grade = $5 \
+        WHERE subject_attempt.id = $1;"
+    );
 
     pqxx::work transaction{*this->_connection};
 
@@ -141,40 +147,48 @@ void SqlStudentRepository::save(Student student)
                 boost::gregorian::to_iso_extended_string(semester->getEndDate())
             );
 
+            string attemptsIds;
+            for (auto attempt: semester->getSubjectsAttempts()) {
+                if (attemptsIds.empty()) {
+                    attemptsIds = "'" + transaction.esc(attempt->getId()) + "'";
+                } else {
+                    attemptsIds += ", '" + transaction.esc(attempt->getId()) + "'";
+                }
 
-            // string attemptsIds;
-            // for (auto attempt: semester->getSubjectsAttempts()) {
-            //     if (attemptsIds.empty()) {
-            //         attemptsIds = transaction.esc(attempt->getId());
-            //     } else {
-            //         attemptsIds += ", " + transaction.esc(attempt->getId());
-            //     }
+                string subjectId = attempt->getSubject()->getId();
 
-            //     transaction.exec_prepared(
-            //         "upsert_student_subject",
-            //         attempt->getId(),
-            //         semester->getId(),
-            //         attempt->getSubjectCode(),
-            //         attempt->getGrade(),
-            //         attempt->getProfessor()
-            //     );
-            // }
+                transaction.exec_prepared(
+                    "upsert_student_subject",
+                    attempt->getId(),
+                    semester->getId(),
+                    attempt->getSubject()->getId(),
+                    attempt->getProfessor(),
+                    attempt->getGrade()
+                );
+            }
 
-            // transaction.exec(
-            //     "DELETE subject_attempt sa \
-            //     WHERE sa.semester_id IN ( \
-            //         SELECT id \
-            //         FROM student_semester \
-            //         WHERE student_id = $1 \
-            //     ) AND NOT IN (" + attemptsIds + ");"
-            // );
+            transaction.exec(
+                "DELETE FROM subject_attempt \
+                WHERE semester_id IN ( \
+                    SELECT id \
+                    FROM student_semester \
+                    WHERE student_id = '" + transaction.esc(student.getId()) + "' \
+                ) AND id NOT IN (" + attemptsIds + ");"
+            );
         }
 
-        transaction.exec(
-            "DELETE FROM student_semester "
-            "WHERE student_id = '" + transaction.esc(student.getId()) + "'" +
-            "AND id NOT IN (" + semestersIds + ");"
-        );
+        if (!semestersIds.empty()) {
+            transaction.exec(
+                "DELETE FROM student_semester "
+                "WHERE student_id = '" + transaction.esc(student.getId()) + "' " +
+                "AND id NOT IN (" + semestersIds + ");"
+            );
+        } else {
+            transaction.exec(
+                "DELETE FROM student_semester "
+                "WHERE student_id = '" + transaction.esc(student.getId()) + "';"
+            );
+        }
 
     } catch(pqxx::failure const &e) {
         transaction.abort();

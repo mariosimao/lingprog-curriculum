@@ -6,6 +6,8 @@ SubjectAttempt::SubjectAttempt(string id, Subject* subject)
 {
     this->_id = id;
     this->_subject = subject;
+    this->_professor = "";
+    this->_grade = -1;
 }
 
 string SubjectAttempt::getId()
