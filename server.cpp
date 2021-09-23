@@ -34,8 +34,29 @@ void handleRequest(web::http::http_request request)
         }
 
         request.reply(web::http::status_codes::NotFound);
-    } catch(const std::exception& e) {
-        request.reply(web::http::status_codes::InternalError);
+    } catch (web::json::json_exception& e) {
+        web::json::value response = web::json::value::object();
+        response["error"] = web::json::value::object();
+        response["error"]["message"] = web::json::value::string(
+            "Invalid request body."
+        );
+
+        request.reply(web::http::status_codes::BadRequest, response);
+    } catch(DomainException& e) {
+        web::json::value response = web::json::value::object();
+        response["error"] = web::json::value::object();
+        response["error"]["message"] = web::json::value::string(e.what());
+
+        request.reply(web::http::status_codes::BadRequest, response);
+    } catch(std::exception& e) {
+        cerr << e.what() << endl;
+        web::json::value response = web::json::value::object();
+        response["error"] = web::json::value::object();
+        response["error"]["message"] = web::json::value::string(
+            "Internal error."
+        );
+
+        request.reply(web::http::status_codes::InternalError, response);
     }
 
     return;
@@ -43,33 +64,28 @@ void handleRequest(web::http::http_request request)
 
 int main(int argc, char const *argv[])
 {
-    try {
-        if (argc < 3) {
-            cerr << "Missing arguments. Usage: server <address> <port>" << endl;
-            return 1;
-        }
-        string address = string(argv[1]);
-        string port = string(argv[2]);
-
-        address.append(":");
-        address.append(port);
-        web::http::uri uri(address);
-
-        web::http::experimental::listener::http_listener httpListener(uri);
-
-        httpListener.support(handleRequest);
-
-        httpListener.open().wait();
-        cout << "Listening on " << address << endl;
-        cout << "Press ENTER to exit." << endl;
-
-        string line;
-        getline(cin, line);
-
-        httpListener.close();
-        return 0;
-    } catch(const std::exception& e) {
-        cerr << e.what() << '\n';
+    if (argc < 3) {
+        cerr << "Missing arguments. Usage: server <address> <port>" << endl;
         return 1;
     }
+    string address = string(argv[1]);
+    string port = string(argv[2]);
+
+    address.append(":");
+    address.append(port);
+    web::http::uri uri(address);
+
+    web::http::experimental::listener::http_listener httpListener(uri);
+
+    httpListener.support(handleRequest);
+
+    httpListener.open().wait();
+    cout << "Listening on " << address << endl;
+    cout << "Press ENTER to exit." << endl;
+
+    string line;
+    getline(cin, line);
+
+    httpListener.close();
+    return 0;
 }
