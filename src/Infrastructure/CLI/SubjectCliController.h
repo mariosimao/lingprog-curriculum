@@ -9,9 +9,9 @@ using namespace std;
 class SubjectCliController
 {
     private:
-        ISubjectRepository* _subjectRepository;
+        ISubjectRepository& _subjectRepository;
     public:
-        SubjectCliController(ISubjectRepository* subjectRepository);
+        SubjectCliController(ISubjectRepository& subjectRepository);
         void registerSubject(vector<string> arguments);
         void addPrerequisite(vector<string> arguments);
 };

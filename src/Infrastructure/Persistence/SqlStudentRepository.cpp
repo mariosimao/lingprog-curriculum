@@ -7,15 +7,13 @@
 using namespace std;
 
 SqlStudentRepository::SqlStudentRepository(
-    pqxx::connection* connection
-) {
-    this->_connection = connection;
-    // this->_subjectRepository = subjectRepository;
-}
+    pqxx::connection& connection
+): _connection(connection)
+{}
 
 Student SqlStudentRepository::findById(string studentId)
 {
-    this->_connection->prepare(
+    this->_connection.prepare(
         "find_student",
         "SELECT \
             s.id \
@@ -23,7 +21,7 @@ Student SqlStudentRepository::findById(string studentId)
         WHERE s.id = $1"
     );
 
-    this->_connection->prepare(
+    this->_connection.prepare(
         "find_student_semesters",
         "SELECT \
             ss.id, \
@@ -34,7 +32,7 @@ Student SqlStudentRepository::findById(string studentId)
         WHERE ss.student_id = $1"
     );
 
-    this->_connection->prepare(
+    this->_connection.prepare(
         "find_student_subjects",
         "SELECT \
             sa.id, \
@@ -46,7 +44,7 @@ Student SqlStudentRepository::findById(string studentId)
         WHERE ss.student_id = $1"
     );
 
-    pqxx::work transaction{*this->_connection};
+    pqxx::work transaction{this->_connection};
 
     pqxx::result studentResult  = transaction.exec_prepared("find_student", studentId);
     pqxx::result semesterResult = transaction.exec_prepared("find_student_semesters", studentId);
@@ -56,9 +54,9 @@ Student SqlStudentRepository::findById(string studentId)
         throw runtime_error("Student not found");
     }
 
-    vector<StudentSemester*> semesters;
+    vector<StudentSemester> semesters;
     for (auto row: semesterResult) {
-        StudentSemester* semester = new StudentSemester(
+        StudentSemester semester(
             row[0].c_str(),
             row[1].c_str(),
             boost::gregorian::from_simple_string(row[2].c_str()),
@@ -76,16 +74,16 @@ Student SqlStudentRepository::findById(string studentId)
     return student;
 }
 
-void SqlStudentRepository::save(Student student)
+void SqlStudentRepository::save(Student& student)
 {
-    this->_connection->prepare(
+    this->_connection.prepare(
         "save_student",
         "INSERT INTO student (id) \
         VALUES ($1) \
         ON CONFLICT DO NOTHING;"
     );
 
-    this->_connection->prepare(
+    this->_connection.prepare(
         "upsert_student_semester",
         "INSERT INTO student_semester (id, student_id, name, start_date, end_date) \
         VALUES ( \
@@ -103,7 +101,7 @@ void SqlStudentRepository::save(Student student)
         WHERE student_semester.id = $1;"
     );
 
-    this->_connection->prepare(
+    this->_connection.prepare(
         "upsert_student_subject",
         "INSERT INTO subject_attempt (id, semester_id, subject_id, professor, grade) \
         VALUES ( \
@@ -122,7 +120,7 @@ void SqlStudentRepository::save(Student student)
         WHERE subject_attempt.id = $1;"
     );
 
-    pqxx::work transaction{*this->_connection};
+    pqxx::work transaction{this->_connection};
 
     try {
         transaction.exec_prepared(
@@ -133,37 +131,35 @@ void SqlStudentRepository::save(Student student)
         string semestersIds;
         for (auto semester: student.getStudentSemesters()) {
             if (semestersIds.empty()) {
-                semestersIds = "'" + transaction.esc(semester->getId()) + "'";
+                semestersIds = "'" + transaction.esc(semester.getId()) + "'";
             } else {
-                semestersIds += ", '" + transaction.esc(semester->getId()) + "'";
+                semestersIds += ", '" + transaction.esc(semester.getId()) + "'";
             }
 
             transaction.exec_prepared(
                 "upsert_student_semester",
-                semester->getId(),
+                semester.getId(),
                 student.getId(),
-                semester->getName(),
-                boost::gregorian::to_iso_extended_string(semester->getStartDate()),
-                boost::gregorian::to_iso_extended_string(semester->getEndDate())
+                semester.getName(),
+                boost::gregorian::to_iso_extended_string(semester.getStartDate()),
+                boost::gregorian::to_iso_extended_string(semester.getEndDate())
             );
 
             string attemptsIds;
-            for (auto attempt: semester->getSubjectsAttempts()) {
+            for (auto attempt: semester.getSubjectsAttempts()) {
                 if (attemptsIds.empty()) {
-                    attemptsIds = "'" + transaction.esc(attempt->getId()) + "'";
+                    attemptsIds = "'" + transaction.esc(attempt.getId()) + "'";
                 } else {
-                    attemptsIds += ", '" + transaction.esc(attempt->getId()) + "'";
+                    attemptsIds += ", '" + transaction.esc(attempt.getId()) + "'";
                 }
-
-                string subjectId = attempt->getSubject()->getId();
 
                 transaction.exec_prepared(
                     "upsert_student_subject",
-                    attempt->getId(),
-                    semester->getId(),
-                    attempt->getSubject()->getId(),
-                    attempt->getProfessor(),
-                    attempt->getGrade()
+                    attempt.getId(),
+                    semester.getId(),
+                    attempt.getSubject().getId(),
+                    attempt.getProfessor(),
+                    attempt.getGrade()
                 );
             }
 

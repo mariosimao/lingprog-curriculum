@@ -9,10 +9,8 @@
 
 using namespace std;
 
-SubjectCliController::SubjectCliController(ISubjectRepository* subjectRepository)
-{
-    this->_subjectRepository = subjectRepository;
-}
+SubjectCliController::SubjectCliController(ISubjectRepository& subjectRepository):
+    _subjectRepository(subjectRepository) {}
 
 void SubjectCliController::registerSubject(vector<string> arguments)
 {

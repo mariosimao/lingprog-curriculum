@@ -3,19 +3,17 @@
 #include "../Domain/Subject.h"
 #include "../Domain/ISubjectRepository.h"
 
-AddPrerequisiteHandler::AddPrerequisiteHandler(ISubjectRepository* subjectRepository)
-{
-    this->_subjectRepository = subjectRepository;
-}
+AddPrerequisiteHandler::AddPrerequisiteHandler(ISubjectRepository& subjectRepository):
+    _subjectRepository(subjectRepository) {}
 
 void AddPrerequisiteHandler::execute(string subjectId, string prerequisiteId)
 {
-    Subject* subject = this->_subjectRepository->findById(subjectId);
-    Subject* requisite = this->_subjectRepository->findById(prerequisiteId);
+    Subject subject = this->_subjectRepository.findById(subjectId);
+    Subject requisite = this->_subjectRepository.findById(prerequisiteId);
 
-    subject->addPrerequisite(requisite->getId());
+    subject.addPrerequisite(requisite.getId());
 
-    this->_subjectRepository->save(subject);
+    this->_subjectRepository.save(subject);
 
     return;
 }

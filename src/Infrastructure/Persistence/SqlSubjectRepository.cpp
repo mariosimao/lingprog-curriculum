@@ -8,14 +8,13 @@
 using namespace std;
 
 SqlSubjectRepository::SqlSubjectRepository(
-    pqxx::connection* connection
-) {
-    this->_connection = connection;
-}
+    pqxx::connection& connection
+): _connection(connection)
+{}
 
-Subject* SqlSubjectRepository::findById(const string subjectId)
+Subject SqlSubjectRepository::findById(string subjectId)
 {
-    this->_connection->prepare(
+    this->_connection.prepare(
         "find_subject",
         "SELECT \
             s.code, \
@@ -25,7 +24,7 @@ Subject* SqlSubjectRepository::findById(const string subjectId)
         WHERE s.id = $1"
     );
 
-    this->_connection->prepare(
+    this->_connection.prepare(
         "find_subject_prerequisites",
         "SELECT \
             sp.prerequisite_id \
@@ -33,7 +32,7 @@ Subject* SqlSubjectRepository::findById(const string subjectId)
         WHERE sp.subject_id = $1"
     );
 
-    this->_connection->prepare(
+    this->_connection.prepare(
         "find_subject_corequisites",
         "SELECT \
             sc.corequisite_id \
@@ -41,7 +40,7 @@ Subject* SqlSubjectRepository::findById(const string subjectId)
         WHERE sc.subject_id = $1"
     );
 
-    pqxx::work transaction{*this->_connection};
+    pqxx::work transaction{this->_connection};
 
     pqxx::result subjectResult  = transaction.exec_prepared("find_subject", subjectId);
     pqxx::result prerequisiteResult = transaction.exec_prepared("find_subject_prerequisites", subjectId);
@@ -61,7 +60,7 @@ Subject* SqlSubjectRepository::findById(const string subjectId)
         corequisites.insert(row[0].c_str());
     }
 
-    Subject* subject = new Subject(
+    Subject subject(
         subjectId,
         string(subjectResult[0][0].c_str()),
         string(subjectResult[0][1].c_str()),
@@ -73,9 +72,9 @@ Subject* SqlSubjectRepository::findById(const string subjectId)
     return subject;
 }
 
-void SqlSubjectRepository::save(Subject* subject)
+void SqlSubjectRepository::save(Subject& subject)
 {
-    this->_connection->prepare(
+    this->_connection.prepare(
         "save_subject",
         "INSERT INTO subject (id, code, name, credits) \
         VALUES ($1, $2, $3, $4) \
@@ -87,33 +86,33 @@ void SqlSubjectRepository::save(Subject* subject)
         WHERE subject.id = $1;"
     );
 
-    this->_connection->prepare(
+    this->_connection.prepare(
         "upsert_subject_prerequisites",
         "INSERT INTO subject_prerequisite (subject_id, prerequisite_id) \
         VALUES ($1, $2) \
         ON CONFLICT DO NOTHING;"
     );
 
-    this->_connection->prepare(
+    this->_connection.prepare(
         "upsert_subject_corequisites",
         "INSERT INTO subject_corequisite (subject_id, corequisite_id) \
         VALUES ($1, $2) \
         ON CONFLICT DO NOTHING;"
     );
 
-    pqxx::work transaction{*this->_connection};
+    pqxx::work transaction{this->_connection};
 
     try {
         transaction.exec_prepared(
             "save_subject",
-            subject->getId(),
-            subject->getCode(),
-            subject->getName(),
-            subject->getCredits()
+            subject.getId(),
+            subject.getCode(),
+            subject.getName(),
+            subject.getCredits()
         );
 
         string prerequisitesIds;
-        for (auto requisiteId: subject->getPrerequisites()) {
+        for (auto requisiteId: subject.getPrerequisites()) {
             if (prerequisitesIds.empty()) {
                 prerequisitesIds = "'" + transaction.esc(requisiteId) + "'";
             } else {
@@ -122,13 +121,13 @@ void SqlSubjectRepository::save(Subject* subject)
 
             transaction.exec_prepared(
                 "upsert_subject_prerequisites",
-                subject->getId(),
+                subject.getId(),
                 requisiteId
             );
         }
 
         string corequisitesIds;
-        for (auto requisiteId: subject->getCorequisites()) {
+        for (auto requisiteId: subject.getCorequisites()) {
             if (corequisitesIds.empty()) {
                 corequisitesIds = "'" + transaction.esc(requisiteId) + "'";
             } else {
@@ -137,7 +136,7 @@ void SqlSubjectRepository::save(Subject* subject)
 
             transaction.exec_prepared(
                 "upsert_subject_corequisites",
-                subject->getId(),
+                subject.getId(),
                 requisiteId
             );
         }
@@ -145,26 +144,26 @@ void SqlSubjectRepository::save(Subject* subject)
         if (!prerequisitesIds.empty()) {
             transaction.exec(
                 "DELETE FROM subject_prerequisite sp "
-                "WHERE sp.subject_id = '" + transaction.esc(subject->getId()) + "' "
+                "WHERE sp.subject_id = '" + transaction.esc(subject.getId()) + "' "
                 "AND sp.prerequisite_id NOT IN (" + prerequisitesIds + ");"
             );
         } else {
             transaction.exec(
                 "DELETE FROM subject_prerequisite sp "
-                "WHERE sp.subject_id = '" + transaction.esc(subject->getId()) + "';"
+                "WHERE sp.subject_id = '" + transaction.esc(subject.getId()) + "';"
             );
         }
 
         if (!corequisitesIds.empty()) {
             transaction.exec(
                 "DELETE FROM subject_corequisite "
-                "WHERE subject_id = '" + transaction.esc(subject->getId()) + "' "
+                "WHERE subject_id = '" + transaction.esc(subject.getId()) + "' "
                 "AND corequisite_id NOT IN (" + corequisitesIds + ");"
             );
         } else {
             transaction.exec(
                 "DELETE FROM subject_corequisite "
-                "WHERE subject_id = '" + transaction.esc(subject->getId()) + "';"
+                "WHERE subject_id = '" + transaction.esc(subject.getId()) + "';"
             );
         }
     } catch(pqxx::failure const &e) {
@@ -178,22 +177,22 @@ void SqlSubjectRepository::save(Subject* subject)
 
 void SqlSubjectRepository::remove(string subjectId)
 {
-    pqxx::work transaction{*this->_connection};
+    pqxx::work transaction{this->_connection};
 
     try {
-        this->_connection->prepare(
+        this->_connection.prepare(
             "remove_subject_prerequisite",
             "DELETE FROM subject_prerequisite \
             WHERE subject_id = $1;"
         );
 
-        this->_connection->prepare(
+        this->_connection.prepare(
             "remove_subject_corequisite",
             "DELETE FROM subject_corequisite \
             WHERE subject_id = $1;"
         );
 
-        this->_connection->prepare(
+        this->_connection.prepare(
             "remove_subject",
             "DELETE FROM subject \
             WHERE id = $1;"

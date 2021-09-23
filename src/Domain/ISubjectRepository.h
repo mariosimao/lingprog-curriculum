@@ -5,8 +5,9 @@
 class ISubjectRepository
 {
     public:
-        virtual Subject* findById(const string subjectId) = 0;
-        virtual void save(Subject* subject) = 0;
-        virtual void remove(const string subjectId) = 0;
+        ~ISubjectRepository() { };
+        virtual Subject findById(string subjectId) = 0;
+        virtual void save(Subject& subject) = 0;
+        virtual void remove(string subjectId) = 0;
 };
 #endif

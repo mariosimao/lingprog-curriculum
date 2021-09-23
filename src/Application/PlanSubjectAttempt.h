@@ -10,12 +10,12 @@ using namespace std;
 class PlanSubjectAttempt
 {
     private:
-        IStudentRepository* _studentRepository;
-        ISubjectRepository* _subjectRepository;
+        IStudentRepository& _studentRepository;
+        ISubjectRepository& _subjectRepository;
     public:
         PlanSubjectAttempt(
-            IStudentRepository* studentRepository,
-            ISubjectRepository* subjectRepository
+            IStudentRepository& studentRepository,
+            ISubjectRepository& subjectRepository
         );
         string execute(
             string studentId,

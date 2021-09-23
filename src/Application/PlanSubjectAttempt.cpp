@@ -6,25 +6,23 @@
 #include "../Domain/Subject.h"
 
 PlanSubjectAttempt::PlanSubjectAttempt(
-    IStudentRepository* studentRepository,
-    ISubjectRepository* subjectRepository
-) {
-    this->_studentRepository = studentRepository;
-    this->_subjectRepository = subjectRepository;
-}
+    IStudentRepository& studentRepository,
+    ISubjectRepository& subjectRepository
+):
+    _studentRepository(studentRepository), _subjectRepository(subjectRepository) {}
 
 string PlanSubjectAttempt::execute(
     string studentId,
     string semesterId,
     string subjectId
 ) {
-    Student student = this->_studentRepository->findById(studentId);
-    Subject* subject = this->_subjectRepository->findById(subjectId);
+    Student student = this->_studentRepository.findById(studentId);
+    Subject subject = this->_subjectRepository.findById(subjectId);
 
     string id = boost::uuids::to_string(boost::uuids::random_generator()());
     student.planSubjectAttempt(id, semesterId, subject);
 
-    this->_studentRepository->save(student);
+    this->_studentRepository.save(student);
 
     return id;
 }

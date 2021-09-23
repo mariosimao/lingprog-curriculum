@@ -16,7 +16,7 @@ class StudentSemester
         string _name;
         boost::gregorian::date _startDate;
         boost::gregorian::date _endDate;
-        vector<SubjectAttempt*> _subjects;
+        vector<SubjectAttempt> _subjects;
     public:
         StudentSemester(
             string id,
@@ -28,9 +28,9 @@ class StudentSemester
         string getName();
         boost::gregorian::date getStartDate();
         boost::gregorian::date getEndDate();
-        vector<SubjectAttempt*> getSubjectsAttempts();
-        SubjectAttempt* findSubjectAttempt(string subjectId);
-        void planSubjectAttempt(string attemptId, Subject* subject);
+        vector<SubjectAttempt> getSubjectsAttempts();
+        SubjectAttempt& findSubjectAttempt(string subjectId);
+        void planSubjectAttempt(string attemptId, Subject& subject);
         void addGrade(string subjectId, float grade);
         void addProfessor(string subjectId, string professorName);
 };

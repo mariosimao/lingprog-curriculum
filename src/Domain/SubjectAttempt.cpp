@@ -2,10 +2,9 @@
 #include "Subject.h"
 #include "SubjectAttempt.h"
 
-SubjectAttempt::SubjectAttempt(string id, Subject* subject)
+SubjectAttempt::SubjectAttempt(string id, Subject& subject): _subject(subject)
 {
     this->_id = id;
-    this->_subject = subject;
     this->_professor = "";
     this->_grade = -1;
 }
@@ -15,7 +14,7 @@ string SubjectAttempt::getId()
     return this->_id;
 }
 
-Subject* SubjectAttempt::getSubject()
+Subject SubjectAttempt::getSubject()
 {
     return this->_subject;
 }

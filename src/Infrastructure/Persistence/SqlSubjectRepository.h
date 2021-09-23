@@ -10,14 +10,12 @@ using namespace std;
 class SqlSubjectRepository: public ISubjectRepository
 {
     private:
-        pqxx::connection* _connection;
-        map<string, Subject*> _mapByCode;
+        pqxx::connection& _connection;
     public:
-        SqlSubjectRepository(
-            pqxx::connection* connection
-        );
-        Subject* findById(const string subjectId);
-        void save(Subject* subject);
-        void remove(const string subjectId);
+        SqlSubjectRepository(pqxx::connection& connection);
+        ~SqlSubjectRepository() {};
+        Subject findById(string subjectId);
+        void save(Subject& subject);
+        void remove(string subjectId);
 };
 #endif

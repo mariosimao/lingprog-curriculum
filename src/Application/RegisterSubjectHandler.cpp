@@ -6,10 +6,8 @@
 #include "../Domain/Subject.h"
 #include "../Domain/ISubjectRepository.h"
 
-RegisterSubjectHandler::RegisterSubjectHandler(ISubjectRepository* subjectRepository)
-{
-    this->_subjectRepository = subjectRepository;
-}
+RegisterSubjectHandler::RegisterSubjectHandler(ISubjectRepository& subjectRepository):
+    _subjectRepository(subjectRepository) {}
 
 string RegisterSubjectHandler::execute(
     string code,
@@ -20,9 +18,9 @@ string RegisterSubjectHandler::execute(
 ) {
     string id = boost::uuids::to_string(boost::uuids::random_generator()());
 
-    Subject* subject = new Subject(id, code, name, credits, prerequisites, corequisites);
+    Subject subject(id, code, name, credits, prerequisites, corequisites);
 
-    this->_subjectRepository->save(subject);
+    this->_subjectRepository.save(subject);
 
     return id;
 }

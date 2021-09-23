@@ -10,12 +10,12 @@ using namespace std;
 class StudentCliController
 {
     private:
-        IStudentRepository* _studentRepository;
-        ISubjectRepository* _subjectRepository;
+        IStudentRepository& _studentRepository;
+        ISubjectRepository& _subjectRepository;
     public:
         StudentCliController(
-            IStudentRepository* studentRepository,
-            ISubjectRepository* subjectRepository
+            IStudentRepository& studentRepository,
+            ISubjectRepository& subjectRepository
         );
         void registerStudent(vector<string> arguments);
         void planSemester(vector<string> arguments);

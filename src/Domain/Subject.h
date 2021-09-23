@@ -16,12 +16,12 @@ class Subject
         set<string> _corequisites;
     public:
         Subject(
-            const string id,
-            const string code,
-            const string name,
-            const int credits,
-            const set<string> prerequisites,
-            const set<string> corequisites
+            string id,
+            string code,
+            string name,
+            int credits,
+            set<string> prerequisites,
+            set<string> corequisites
         );
         string getId();
         string getCode();
@@ -29,9 +29,9 @@ class Subject
         int getCredits();
         set<string> getPrerequisites();
         set<string> getCorequisites();
-        void addPrerequisite(const string prerequisite);
-        void removePrequisite(const string prerequisite);
-        void addCorequisite(const string corequisite);
-        void removeCorequisite(const string corequisite);
+        void addPrerequisite(string prerequisite);
+        void removePrequisite(string prerequisite);
+        void addCorequisite(string corequisite);
+        void removeCorequisite(string corequisite);
 };
 #endif

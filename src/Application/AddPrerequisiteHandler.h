@@ -8,9 +8,9 @@ using namespace std;
 class AddPrerequisiteHandler
 {
     private:
-        ISubjectRepository* _subjectRepository;
+        ISubjectRepository& _subjectRepository;
     public:
-        AddPrerequisiteHandler(ISubjectRepository* subjectRepository);
+        AddPrerequisiteHandler(ISubjectRepository& subjectRepository);
         void execute(string subjectId, string prerequisiteId);
 };
 #endif

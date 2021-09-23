@@ -4,12 +4,12 @@
 #include "DomainException.h"
 
 Subject::Subject(
-    const string id,
-    const string code,
-    const string name,
-    const int credits,
-    const set<string> prerequisites,
-    const set<string> corequisites
+    string id,
+    string code,
+    string name,
+    int credits,
+    set<string> prerequisites,
+    set<string> corequisites
 ) {
     this->_id = id;
     this->_code = code;
@@ -49,7 +49,7 @@ set<string> Subject::getCorequisites()
     return this->_corequisites;
 }
 
-void Subject::addPrerequisite(const string prerequisite)
+void Subject::addPrerequisite(string prerequisite)
 {
     if (prerequisite == this->_id) {
         throw DomainException("Cannot add same subject as prerequisite.");
@@ -58,17 +58,17 @@ void Subject::addPrerequisite(const string prerequisite)
     this->_prerequisites.insert(prerequisite);
 }
 
-void Subject::removePrequisite(const string prerequisite)
+void Subject::removePrequisite(string prerequisite)
 {
     this->_prerequisites.erase(prerequisite);
 }
 
-void Subject::addCorequisite(const string corequisite)
+void Subject::addCorequisite(string corequisite)
 {
     this->_corequisites.insert(corequisite);
 }
 
-void Subject::removeCorequisite(const string corequisite)
+void Subject::removeCorequisite(string corequisite)
 {
     this->_corequisites.erase(corequisite);
 }

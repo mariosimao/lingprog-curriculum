@@ -9,13 +9,11 @@ using namespace std;
 class SqlStudentRepository: public IStudentRepository
 {
     private:
-        pqxx::connection* _connection;
+        pqxx::connection& _connection;
     public:
-        SqlStudentRepository(
-            pqxx::connection* connection
-        );
+        SqlStudentRepository(pqxx::connection& connection);
         Student findById(string studentId);
-        void save(Student student);
+        void save(Student& student);
         void remove(string studentId);
 };
 #endif

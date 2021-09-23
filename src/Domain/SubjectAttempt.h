@@ -11,11 +11,11 @@ class SubjectAttempt
         string _id;
         string _professor;
         float _grade;
-        Subject* _subject;
+        Subject& _subject;
     public:
-        SubjectAttempt(string id, Subject* subject);
+        SubjectAttempt(string id, Subject& subject);
         string getId();
-        Subject* getSubject();
+        Subject getSubject();
         string getProfessor();
         float getGrade();
         void addProfessor(string professorName);

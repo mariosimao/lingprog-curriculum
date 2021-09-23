@@ -16,11 +16,11 @@ int main(int argc, char const *argv[])
         string connectionString = "host=localhost port=5432 dbname=my_curriculum user=my_curriculum password=password";
         pqxx::connection connection(connectionString.c_str());
 
-        SqlStudentRepository studentRepository(&connection);
-        SqlSubjectRepository subjectRepository(&connection);
+        SqlStudentRepository studentRepository(connection);
+        SqlSubjectRepository subjectRepository(connection);
 
-        StudentCliController studentController(&studentRepository, &subjectRepository);
-        SubjectCliController subjectController(&subjectRepository);
+        StudentCliController studentController(studentRepository, subjectRepository);
+        SubjectCliController subjectController(subjectRepository);
 
         if (argc < 2) {
             throw runtime_error("Too few arguments");

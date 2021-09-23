@@ -9,9 +9,9 @@ using namespace std;
 class RegisterSubjectHandler
 {
     private:
-        ISubjectRepository* _subjectRepository;
+        ISubjectRepository& _subjectRepository;
     public:
-        RegisterSubjectHandler(ISubjectRepository* subjectRepository);
+        RegisterSubjectHandler(ISubjectRepository& subjectRepository);
         string execute(
             string code,
             string name,

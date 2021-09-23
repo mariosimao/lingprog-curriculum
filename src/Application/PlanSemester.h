@@ -9,9 +9,9 @@ using namespace std;
 class PlanSemester
 {
     private:
-        IStudentRepository* _studentRepository;
+        IStudentRepository& _studentRepository;
     public:
-        PlanSemester(IStudentRepository* studentRepository);
+        PlanSemester(IStudentRepository& studentRepository);
         string execute(
             string studentId,
             boost::gregorian::date startDate,

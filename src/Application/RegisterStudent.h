@@ -8,9 +8,9 @@ using namespace std;
 class RegisterStudent
 {
     private:
-        IStudentRepository* _studentRepository;
+        IStudentRepository& _studentRepository;
     public:
-        RegisterStudent(IStudentRepository* studentRepository);
+        RegisterStudent(IStudentRepository& studentRepository);
         string execute(string studentId);
 };
 #endif

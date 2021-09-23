@@ -8,12 +8,10 @@
 using namespace std;
 
 StudentCliController::StudentCliController(
-    IStudentRepository* studentRepository,
-    ISubjectRepository* subjectRepository
-) {
-    this->_studentRepository = studentRepository;
-    this->_subjectRepository = subjectRepository;
-}
+    IStudentRepository& studentRepository,
+    ISubjectRepository& subjectRepository
+): _studentRepository(studentRepository), _subjectRepository(subjectRepository)
+{}
 
 void StudentCliController::registerStudent(vector<string> arguments)
 {
