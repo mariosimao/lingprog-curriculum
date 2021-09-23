@@ -7,6 +7,7 @@ class ISubjectRepository
     public:
         ~ISubjectRepository() { };
         virtual Subject findById(string subjectId) = 0;
+        virtual bool subjectCodeExists(string code) = 0;
         virtual void save(Subject& subject) = 0;
         virtual void remove(string subjectId) = 0;
 };

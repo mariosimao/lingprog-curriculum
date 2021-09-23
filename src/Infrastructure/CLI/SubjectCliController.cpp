@@ -4,7 +4,7 @@
 #include <vector>
 #include "SubjectCliController.h"
 #include "../../Application/AddPrerequisiteHandler.h"
-#include "../../Application/RegisterSubjectHandler.h"
+#include "../../Application/RegisterSubject.h"
 #include "../../Domain/ISubjectRepository.h"
 
 using namespace std;
@@ -24,7 +24,7 @@ void SubjectCliController::registerSubject(vector<string> arguments)
     set<string> prerequisites;
     set<string> corequisites;
 
-    RegisterSubjectHandler handler(this->_subjectRepository);
+    RegisterSubject handler(this->_subjectRepository);
     string id = handler.execute(code, name, credits, prerequisites, corequisites);
 
     cout << "Subject successfully registered" << "\n" << "\n";

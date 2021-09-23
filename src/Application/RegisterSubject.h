@@ -6,12 +6,12 @@
 
 using namespace std;
 
-class RegisterSubjectHandler
+class RegisterSubject
 {
     private:
         ISubjectRepository& _subjectRepository;
     public:
-        RegisterSubjectHandler(ISubjectRepository& subjectRepository);
+        RegisterSubject(ISubjectRepository& subjectRepository);
         string execute(
             string code,
             string name,

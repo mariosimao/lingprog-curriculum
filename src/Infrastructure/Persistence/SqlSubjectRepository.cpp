@@ -72,6 +72,25 @@ Subject SqlSubjectRepository::findById(string subjectId)
     return subject;
 }
 
+bool SqlSubjectRepository::subjectCodeExists(string code)
+{
+    this->_connection.prepare(
+        "subject_code_exists",
+        "SELECT \
+            s.id, \
+            s.code, \
+            s.name, \
+            s.credits \
+        FROM subject s \
+        WHERE s.code = $1"
+    );
+
+    pqxx::work transaction{this->_connection};
+    pqxx::result result  = transaction.exec_prepared("subject_code_exists", code);
+
+    return result.size() != 0;
+}
+
 void SqlSubjectRepository::save(Subject& subject)
 {
     this->_connection.prepare(

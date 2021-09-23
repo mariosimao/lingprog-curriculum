@@ -9,7 +9,7 @@
 #include "./src/Infrastructure/Persistence/SqlStudentRepository.h"
 #include "./src/Infrastructure/Persistence/SqlSubjectRepository.h"
 #include "./src/Infrastructure/HTTP/StudentHttpController.h"
-// #include "./src/Infrastructure/HTTP/SubjectHttpController.h"
+#include "./src/Infrastructure/HTTP/SubjectHttpController.h"
 
 using namespace std;
 
@@ -28,7 +28,7 @@ void handleRequest(web::http::http_request request)
     SqlSubjectRepository subjectRepository(connection);
 
     StudentHttpController studentController(studentRepository, subjectRepository);
-    // SubjectHttpController subjectController(subjectRepository);
+    SubjectHttpController subjectController(subjectRepository);
 
     try {
         if (route == "/student") {
@@ -47,6 +47,13 @@ void handleRequest(web::http::http_request request)
 
             if (method == "POST") {
                 studentController.planSemester(request, studentId);
+                return;
+            }
+        }
+
+        if (route == "/subject") {
+            if (method == "POST") {
+                subjectController.registerSubject(request);
                 return;
             }
         }
