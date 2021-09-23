@@ -1,7 +1,11 @@
 #include <iostream>
 #include <string>
+#include <vector>
+
 #include <cpprest/http_listener.h>
 #include <pqxx/pqxx>
+
+#include "./src/Domain/DomainException.h"
 #include "./src/Infrastructure/Persistence/SqlStudentRepository.h"
 #include "./src/Infrastructure/Persistence/SqlSubjectRepository.h"
 #include "./src/Infrastructure/HTTP/StudentHttpController.h"
@@ -12,6 +16,7 @@ using namespace std;
 void handleRequest(web::http::http_request request)
 {
     string route = request.request_uri().path();
+    vector<string> path = web::http::uri::split_path(route);
     string method = request.method();
 
     cout << "[" << method << "] " << route << endl;
@@ -29,6 +34,19 @@ void handleRequest(web::http::http_request request)
         if (route == "/student") {
             if (method == "POST") {
                 studentController.registerStudent(request);
+                return;
+            }
+        }
+
+        /* /student/:studentId/semester */
+        if (path.size() == 3 &&
+            path[0] == "student" &&
+            path[2] == "semester"
+        ) {
+            string studentId = path[1];
+
+            if (method == "POST") {
+                studentController.planSemester(request, studentId);
                 return;
             }
         }

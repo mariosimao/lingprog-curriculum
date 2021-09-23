@@ -1,5 +1,6 @@
 #ifndef STUDENT_HTTP_CONTROLLER_H
 #define STUDENT_HTTP_CONTROLLER_H
+#include <string>
 #include <cpprest/http_listener.h>
 #include <pqxx/pqxx>
 #include "../../Domain/IStudentRepository.h"
@@ -19,5 +20,6 @@ class StudentHttpController
             ISubjectRepository& subjectRepository
         );
         void registerStudent(http::http_request& request);
+        void planSemester(http::http_request& request, string studentId);
 };
 #endif

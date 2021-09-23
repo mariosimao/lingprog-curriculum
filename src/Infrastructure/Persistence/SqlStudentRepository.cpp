@@ -163,14 +163,25 @@ void SqlStudentRepository::save(Student& student)
                 );
             }
 
-            transaction.exec(
-                "DELETE FROM subject_attempt \
-                WHERE semester_id IN ( \
-                    SELECT id \
-                    FROM student_semester \
-                    WHERE student_id = '" + transaction.esc(student.getId()) + "' \
-                ) AND id NOT IN (" + attemptsIds + ");"
-            );
+            if (attemptsIds.empty()) {
+                transaction.exec(
+                    "DELETE FROM subject_attempt \
+                    WHERE semester_id IN ( \
+                        SELECT id \
+                        FROM student_semester \
+                        WHERE student_id = '" + transaction.esc(student.getId()) + "' \
+                    );"
+                );
+            } else {
+                transaction.exec(
+                    "DELETE FROM subject_attempt \
+                    WHERE semester_id IN ( \
+                        SELECT id \
+                        FROM student_semester \
+                        WHERE student_id = '" + transaction.esc(student.getId()) + "' \
+                    ) AND id NOT IN (" + attemptsIds + ");"
+                );
+            }
         }
 
         if (!semestersIds.empty()) {
