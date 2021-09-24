@@ -45,7 +45,10 @@ void handleRequest(web::http::http_request request)
         ) {
             string studentId = path[1];
 
-            if (method == "POST") {
+            if (method == "GET") {
+                studentController.listSemesters(request, studentId);
+                return;
+            } else if (method == "POST") {
                 studentController.planSemester(request, studentId);
                 return;
             }

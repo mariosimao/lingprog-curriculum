@@ -20,6 +20,7 @@ class StudentHttpController
             ISubjectRepository& subjectRepository
         );
         void registerStudent(http::http_request& request);
+        void listSemesters(http::http_request& request, string studentId);
         void planSemester(http::http_request& request, string studentId);
         void planSubjectAttempt(
             http::http_request& request,

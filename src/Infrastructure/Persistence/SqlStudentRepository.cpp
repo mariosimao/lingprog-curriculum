@@ -30,7 +30,8 @@ Student SqlStudentRepository::findById(string studentId)
             TO_CHAR(ss.start_date, 'YYYY-MM-DD'), \
             TO_CHAR(ss.end_date, 'YYYY-MM-DD') \
         FROM student_semester ss \
-        WHERE ss.student_id = $1"
+        WHERE ss.student_id = $1 \
+        ORDER BY ss.start_date ASC"
     );
 
     this->_connection.prepare(

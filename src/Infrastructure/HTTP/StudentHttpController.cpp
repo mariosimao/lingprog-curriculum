@@ -1,5 +1,6 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include "StudentHttpController.h"
+#include "../../Application/ListStudentSemesters.h"
 #include "../../Application/PlanSemester.h"
 #include "../../Application/PlanSubjectAttempt.h"
 #include "../../Application/RegisterStudent.h"
@@ -23,6 +24,30 @@ void StudentHttpController::registerStudent(http::http_request& request)
     handler.execute(id);
 
     request.reply(http::status_codes::Created);
+    return;
+}
+
+void StudentHttpController::listSemesters(http::http_request& request, string studentId)
+{
+    ListStudentSemesters handler(this->_studentRepository);
+    vector<StudentSemesterView> semesters = handler.execute(studentId);
+
+    web::json::value response = web::json::value::object();
+    response["semesters"] = web::json::value::array();
+
+    int i = 0;
+    for (auto semester: semesters) {
+        web::json::value semesterJson = web::json::value::object();
+        semesterJson["id"] = web::json::value::string(semester.id);
+        semesterJson["name"] = web::json::value::string(semester.name);
+        semesterJson["startDate"] = web::json::value::string(semester.startDate);
+        semesterJson["endDate"] = web::json::value::string(semester.endDate);
+
+        response["semesters"][i] = semesterJson;
+        i++;
+    }
+
+    request.reply(http::status_codes::OK, response);
     return;
 }
 
