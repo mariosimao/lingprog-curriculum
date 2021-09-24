@@ -22,6 +22,11 @@ class StudentHttpController
         void registerStudent(http::http_request& request);
         void listSemesters(http::http_request& request, string studentId);
         void planSemester(http::http_request& request, string studentId);
+        void editSemester(
+            http::http_request& request,
+            string studentId,
+            string semesterId
+        );
         void removeSemester(
             http::http_request& request,
             string studentId,

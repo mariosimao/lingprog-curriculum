@@ -13,6 +13,11 @@ class Student
     private:
         string _id;
         vector<StudentSemester> _semesters;
+        void checkSemesterPeriod(
+            date newStartDate,
+            date newEndDate,
+            string semesterId = ""
+        );
     public:
         Student(string id);
         Student(
@@ -26,6 +31,12 @@ class Student
             string semesterId,
             boost::gregorian::date startDate,
             boost::gregorian::date endDate
+        );
+        void editSemester(
+            string semesterId,
+            string newName,
+            boost::gregorian::date newStartDate,
+            boost::gregorian::date newEndDate
         );
         void removeSemester(string semesterId);
         void planSubjectAttempt(string attemptId, string semesterId, string subjectId);

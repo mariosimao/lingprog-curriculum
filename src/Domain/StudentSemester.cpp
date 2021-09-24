@@ -4,12 +4,10 @@
 StudentSemester::StudentSemester(
     string id,
     string name,
-    boost::gregorian::date startDate,
-    boost::gregorian::date endDate
+    date startDate,
+    date endDate
 ) {
-    if (startDate > endDate) {
-        throw DomainException("Semester should start before ending.");
-    }
+    this->checkPeriod(startDate, endDate);
 
     this->_id = id;
     this->_name = name;
@@ -21,8 +19,8 @@ StudentSemester::StudentSemester(
 StudentSemester::StudentSemester(
     string id,
     string name,
-    boost::gregorian::date startDate,
-    boost::gregorian::date endDate,
+    date startDate,
+    date endDate,
     vector<SubjectAttempt> subjectAttempts
 ) {
     this->_id = id;
@@ -42,12 +40,12 @@ string StudentSemester::getName()
     return this->_name;
 }
 
-boost::gregorian::date StudentSemester::getStartDate()
+date StudentSemester::getStartDate()
 {
     return this->_startDate;
 }
 
-boost::gregorian::date StudentSemester::getEndDate()
+date StudentSemester::getEndDate()
 {
     return this->_endDate;
 }
@@ -79,6 +77,19 @@ bool StudentSemester::attemptWithSubjectExists(string subjectId)
     return false;
 }
 
+void StudentSemester::rename(string newName)
+{
+    this->_name = newName;
+}
+
+void StudentSemester::changeDates(date newStartDate, date newEndDate)
+{
+    this->checkPeriod(newStartDate, newEndDate);
+
+    this->_startDate = newStartDate;
+    this->_endDate = newEndDate;
+}
+
 void StudentSemester::planSubjectAttempt(string attemptId, string subjectId)
 {
     if (this->attemptWithSubjectExists(subjectId)) {
@@ -102,4 +113,13 @@ void StudentSemester::addProfessor(string subjectId, string professorName)
     SubjectAttempt attempt = this->findSubjectAttempt(subjectId);
 
     attempt.addProfessor(professorName);
+}
+
+void StudentSemester::checkPeriod(date newStartDate, date newEndDate)
+{
+    if (newStartDate > newEndDate) {
+        throw DomainException("Semester should start before ending.");
+    }
+
+    return;
 }

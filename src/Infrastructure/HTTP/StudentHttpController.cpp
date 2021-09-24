@@ -1,5 +1,6 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include "StudentHttpController.h"
+#include "../../Application/EditStudentSemester.h"
 #include "../../Application/ListStudentSemesters.h"
 #include "../../Application/PlanSemester.h"
 #include "../../Application/PlanSubjectAttempt.h"
@@ -69,6 +70,33 @@ void StudentHttpController::planSemester(http::http_request& request, string stu
     response["id"] = web::json::value::string(semesterId);
 
     request.reply(http::status_codes::Created, response);
+    return;
+}
+
+void StudentHttpController::editSemester(
+    http::http_request& request,
+    string studentId,
+    string semesterId
+) {
+    web::json::value body = request.extract_json().get();
+
+    string name = body["name"].as_string();
+    string startDate = body["startDate"].as_string();
+    string endDate = body["endDate"].as_string();
+
+    boost::gregorian::date start(boost::gregorian::from_simple_string(startDate));
+    boost::gregorian::date end(boost::gregorian::from_simple_string(endDate));
+
+    EditStudentSemester handler(this->_studentRepository);
+    handler.execute(
+        studentId,
+        semesterId,
+        name,
+        start,
+        end
+    );
+
+    request.reply(http::status_codes::NoContent);
     return;
 }
 

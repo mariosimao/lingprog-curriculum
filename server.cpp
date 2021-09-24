@@ -62,7 +62,14 @@ void handleRequest(web::http::http_request request)
             string studentId = path[1];
             string semesterId = path[3];
 
-            if (method == "DELETE") {
+            if (method == "PUT") {
+                studentController.editSemester(
+                    request,
+                    studentId,
+                    semesterId
+                );
+                return;
+            } else if (method == "DELETE") {
                 studentController.removeSemester(
                     request,
                     studentId,

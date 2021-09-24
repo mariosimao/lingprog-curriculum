@@ -7,36 +7,39 @@
 #include "SubjectAttempt.h"
 
 using namespace std;
-
+using namespace boost::gregorian;
 class StudentSemester
 {
     private:
         string _id;
         string _name;
-        boost::gregorian::date _startDate;
-        boost::gregorian::date _endDate;
+        date _startDate;
+        date _endDate;
         vector<SubjectAttempt> _subjects;
+        void checkPeriod(date newStartDate, date newEndDate);
     public:
         StudentSemester(
             string id,
             string name,
-            boost::gregorian::date startDate,
-            boost::gregorian::date endDate
+            date startDate,
+            date endDate
         );
         StudentSemester(
             string id,
             string name,
-            boost::gregorian::date startDate,
-            boost::gregorian::date endDate,
+            date startDate,
+            date endDate,
             vector<SubjectAttempt> subjectAttempts
         );
         string getId();
         string getName();
-        boost::gregorian::date getStartDate();
-        boost::gregorian::date getEndDate();
+        date getStartDate();
+        date getEndDate();
         vector<SubjectAttempt> getSubjectsAttempts();
         SubjectAttempt& findSubjectAttempt(string subjectId);
         bool attemptWithSubjectExists(string subjectId);
+        void rename(string newName);
+        void changeDates(date newStartDate, date newEndDate);
         void planSubjectAttempt(string attemptId, string subjectId);
         void addGrade(string subjectId, float grade);
         void addProfessor(string subjectId, string professorName);
