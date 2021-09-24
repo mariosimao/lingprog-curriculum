@@ -65,6 +65,22 @@ void Student::planSemester(
     this->_semesters.push_back(studentSemester);
 }
 
+void Student::removeSemester(string semesterId)
+{
+    this->_semesters.erase(
+        remove_if(
+            this->_semesters.begin(),
+            this->_semesters.end(),
+            [semesterId](StudentSemester semester) {
+                return semester.getId() == semesterId;
+            }
+        ),
+        this->_semesters.end()
+    );
+
+    return;
+}
+
 void Student::planSubjectAttempt(
     string attemptId,
     string semesterId,

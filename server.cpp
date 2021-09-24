@@ -54,6 +54,25 @@ void handleRequest(web::http::http_request request)
             }
         }
 
+        /* /students/:studentId/semesters/:semesterId */
+        if (path.size() == 4 &&
+            path[0] == "students" &&
+            path[2] == "semesters"
+        ) {
+            string studentId = path[1];
+            string semesterId = path[3];
+
+            if (method == "DELETE") {
+                studentController.removeSemester(
+                    request,
+                    studentId,
+                    semesterId
+                );
+                return;
+            }
+        }
+
+        /* /students/:studentId/semesters/:semesterId/subject-attempts */
         if (path.size() == 5 &&
             path[0] == "students" &&
             path[2] == "semesters" &&

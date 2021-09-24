@@ -27,6 +27,7 @@ class Student
             boost::gregorian::date startDate,
             boost::gregorian::date endDate
         );
+        void removeSemester(string semesterId);
         void planSubjectAttempt(string attemptId, string semesterId, string subjectId);
         void addGrade(string semesterId, string subjectId, float grade);
         void addProfessor(string semesterId, string subjectId, string professor);

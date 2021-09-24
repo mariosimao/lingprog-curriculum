@@ -4,6 +4,7 @@
 #include "../../Application/PlanSemester.h"
 #include "../../Application/PlanSubjectAttempt.h"
 #include "../../Application/RegisterStudent.h"
+#include "../../Application/RemoveStudentSemester.h"
 #include "../Persistence/SqlStudentRepository.h"
 #include "../Persistence/SqlSubjectRepository.h"
 
@@ -68,6 +69,18 @@ void StudentHttpController::planSemester(http::http_request& request, string stu
     response["id"] = web::json::value::string(semesterId);
 
     request.reply(http::status_codes::Created, response);
+    return;
+}
+
+void StudentHttpController::removeSemester(
+    http::http_request& request,
+    string studentId,
+    string semesterId
+) {
+    RemoveStudentSemester handler(this->_studentRepository);
+    handler.execute(studentId, semesterId);
+
+    request.reply(http::status_codes::NoContent);
     return;
 }
 
