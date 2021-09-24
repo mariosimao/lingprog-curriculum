@@ -11,12 +11,8 @@ class PlanSubjectAttempt
 {
     private:
         IStudentRepository& _studentRepository;
-        ISubjectRepository& _subjectRepository;
     public:
-        PlanSubjectAttempt(
-            IStudentRepository& studentRepository,
-            ISubjectRepository& subjectRepository
-        );
+        PlanSubjectAttempt(IStudentRepository& studentRepository);
         string execute(
             string studentId,
             string semesterId,

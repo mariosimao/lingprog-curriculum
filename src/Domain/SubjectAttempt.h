@@ -1,7 +1,6 @@
 #ifndef SUBJECT_ATTEMPT_H
 #define SUBJECT_ATTEMPT_H
 #include <string>
-#include "Subject.h"
 
 using namespace std;
 
@@ -11,11 +10,12 @@ class SubjectAttempt
         string _id;
         string _professor;
         float _grade;
-        Subject& _subject;
+        string _subjectId;
     public:
-        SubjectAttempt(string id, Subject& subject);
+        SubjectAttempt(string id, string subjectId);
+        SubjectAttempt(string id, float grade, string professor, string subject);
         string getId();
-        Subject getSubject();
+        string getSubjectId();
         string getProfessor();
         float getGrade();
         void addProfessor(string professorName);

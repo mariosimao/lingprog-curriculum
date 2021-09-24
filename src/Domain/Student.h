@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <boost/date_time/gregorian/gregorian.hpp>
-#include "Subject.h"
 #include "StudentSemester.h"
 
 using namespace std;
@@ -28,7 +27,7 @@ class Student
             boost::gregorian::date startDate,
             boost::gregorian::date endDate
         );
-        void planSubjectAttempt(string attemptId, string semesterId, Subject& subject);
+        void planSubjectAttempt(string attemptId, string semesterId, string subjectId);
         void addGrade(string semesterId, string subjectId, float grade);
         void addProfessor(string semesterId, string subjectId, string professor);
 };

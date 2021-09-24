@@ -2,6 +2,7 @@
 #include <iostream>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include "./../../Domain/Student.h"
+#include "./../../Domain/SubjectAttempt.h"
 #include "SqlStudentRepository.h"
 
 using namespace std;
@@ -36,9 +37,10 @@ Student SqlStudentRepository::findById(string studentId)
         "find_student_subjects",
         "SELECT \
             sa.id, \
-            sa.subject_code, \
-            sa.grade, \
-            sa.professor \
+            sa.semester_id, \
+            sa.subject_id, \
+            COALESCE(sa.grade, -1), \
+            COALESCE(sa.professor, '') \
         FROM subject_attempt sa \
         JOIN student_semester ss ON ss.id = sa.semester_id \
         WHERE ss.student_id = $1"
@@ -48,7 +50,7 @@ Student SqlStudentRepository::findById(string studentId)
 
     pqxx::result studentResult  = transaction.exec_prepared("find_student", studentId);
     pqxx::result semesterResult = transaction.exec_prepared("find_student_semesters", studentId);
-    // pqxx::result attemptResult  = transaction.exec_prepared("find_student_subjects", studentId);
+    pqxx::result attemptResult  = transaction.exec_prepared("find_student_subjects", studentId);
 
     if (studentResult.size() == 0) {
         throw runtime_error("Student not found");
@@ -56,11 +58,29 @@ Student SqlStudentRepository::findById(string studentId)
 
     vector<StudentSemester> semesters;
     for (auto row: semesterResult) {
+        string semesterId(row[0].c_str());
+
+        vector<SubjectAttempt> attempts;
+        for (auto attemptRow: attemptResult) {
+            string attemptSemesterId(attemptRow[1].c_str());
+
+            if (attemptSemesterId == semesterId) {
+                SubjectAttempt attempt(
+                    attemptRow[0].c_str(),
+                    stof(attemptRow[3].c_str()),
+                    attemptRow[4].c_str(),
+                    attemptRow[2].c_str()
+                );
+                attempts.push_back(attempt);
+            }
+        }
+
         StudentSemester semester(
             row[0].c_str(),
             row[1].c_str(),
             boost::gregorian::from_simple_string(row[2].c_str()),
-            boost::gregorian::from_simple_string(row[3].c_str())
+            boost::gregorian::from_simple_string(row[3].c_str()),
+            attempts
         );
 
         semesters.push_back(semester);
@@ -115,8 +135,8 @@ void SqlStudentRepository::save(Student& student)
         UPDATE SET \
         semester_id = $2, \
         subject_id = $3, \
-        professor = $4, \
-        grade = $5 \
+        professor = CASE WHEN $4 = '' THEN NULL ELSE $4 END, \
+        grade = CASE WHEN $5 = -1 THEN NULL ELSE $5 END \
         WHERE subject_attempt.id = $1;"
     );
 
@@ -157,7 +177,7 @@ void SqlStudentRepository::save(Student& student)
                     "upsert_student_subject",
                     attempt.getId(),
                     semester.getId(),
-                    attempt.getSubject().getId(),
+                    attempt.getSubjectId(),
                     attempt.getProfessor(),
                     attempt.getGrade()
                 );

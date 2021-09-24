@@ -21,5 +21,10 @@ class StudentHttpController
         );
         void registerStudent(http::http_request& request);
         void planSemester(http::http_request& request, string studentId);
+        void planSubjectAttempt(
+            http::http_request& request,
+            string studentId,
+            string semesterId
+        );
 };
 #endif

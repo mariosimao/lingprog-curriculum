@@ -68,11 +68,11 @@ void Student::planSemester(
 void Student::planSubjectAttempt(
     string attemptId,
     string semesterId,
-    Subject& subject
+    string subjectId
 ) {
-    StudentSemester semester = this->findStudentSemester(semesterId);
+    StudentSemester& semester = this->findStudentSemester(semesterId);
 
-    semester.planSubjectAttempt(attemptId, subject);
+    semester.planSubjectAttempt(attemptId, subjectId);
 }
 
 void Student::addGrade(string semesterId, string subjectId, float grade)

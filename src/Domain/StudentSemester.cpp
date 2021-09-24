@@ -18,6 +18,20 @@ StudentSemester::StudentSemester(
     this->_subjects = vector<SubjectAttempt>();
 }
 
+StudentSemester::StudentSemester(
+    string id,
+    string name,
+    boost::gregorian::date startDate,
+    boost::gregorian::date endDate,
+    vector<SubjectAttempt> subjectAttempts
+) {
+    this->_id = id;
+    this->_name = name;
+    this->_startDate = startDate;
+    this->_endDate = endDate;
+    this->_subjects = subjectAttempts;
+}
+
 string StudentSemester::getId()
 {
     return this->_id;
@@ -46,7 +60,7 @@ vector<SubjectAttempt> StudentSemester::getSubjectsAttempts()
 SubjectAttempt& StudentSemester::findSubjectAttempt(string subjectId)
 {
     for (SubjectAttempt& attempt: this->_subjects) {
-        if (attempt.getSubject().getId() == subjectId) {
+        if (attempt.getSubjectId() == subjectId) {
             return attempt;
         }
     }
@@ -54,11 +68,24 @@ SubjectAttempt& StudentSemester::findSubjectAttempt(string subjectId)
     throw DomainException("Subject attempt not found");
 }
 
-void StudentSemester::planSubjectAttempt(string attemptId, Subject& subject)
+bool StudentSemester::attemptWithSubjectExists(string subjectId)
 {
-    // TODO: avoid duplicate attempts
+    for (SubjectAttempt attempt: this->_subjects) {
+        if (attempt.getSubjectId() == subjectId) {
+            return true;
+        }
+    }
 
-    SubjectAttempt attempt(attemptId, subject);
+    return false;
+}
+
+void StudentSemester::planSubjectAttempt(string attemptId, string subjectId)
+{
+    if (this->attemptWithSubjectExists(subjectId)) {
+        throw DomainException("A subject can not be attempted twice on a semester.");
+    }
+
+    SubjectAttempt attempt(attemptId, subjectId);
 
     this->_subjects.push_back(attempt);
 }

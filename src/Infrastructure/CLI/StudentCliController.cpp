@@ -61,7 +61,7 @@ void StudentCliController::planSubjectAttempt(vector<string> arguments)
     string semesterId = arguments[1];
     string subjectId = arguments[2];
 
-    PlanSubjectAttempt handler(this->_studentRepository, this->_subjectRepository);
+    PlanSubjectAttempt handler(this->_studentRepository);
 
     string id = handler.execute(studentId, semesterId, subjectId);
 

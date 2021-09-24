@@ -31,7 +31,7 @@ void handleRequest(web::http::http_request request)
     SubjectHttpController subjectController(subjectRepository);
 
     try {
-        if (route == "/student") {
+        if (route == "/students") {
             if (method == "POST") {
                 studentController.registerStudent(request);
                 return;
@@ -40,8 +40,8 @@ void handleRequest(web::http::http_request request)
 
         /* /student/:studentId/semester */
         if (path.size() == 3 &&
-            path[0] == "student" &&
-            path[2] == "semester"
+            path[0] == "students" &&
+            path[2] == "semesters"
         ) {
             string studentId = path[1];
 
@@ -51,7 +51,25 @@ void handleRequest(web::http::http_request request)
             }
         }
 
-        if (route == "/subject") {
+        if (path.size() == 5 &&
+            path[0] == "students" &&
+            path[2] == "semesters" &&
+            path[4] == "subject-attempts"
+        ) {
+            string studentId = path[1];
+            string semesterId = path[3];
+
+            if (method == "POST") {
+                studentController.planSubjectAttempt(
+                    request,
+                    studentId,
+                    semesterId
+                );
+                return;
+            }
+        }
+
+        if (route == "/subjects") {
             if (method == "POST") {
                 subjectController.registerSubject(request);
                 return;

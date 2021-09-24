@@ -1,7 +1,8 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include "StudentHttpController.h"
-#include "../../Application/RegisterStudent.h"
 #include "../../Application/PlanSemester.h"
+#include "../../Application/PlanSubjectAttempt.h"
+#include "../../Application/RegisterStudent.h"
 #include "../Persistence/SqlStudentRepository.h"
 #include "../Persistence/SqlSubjectRepository.h"
 
@@ -40,6 +41,29 @@ void StudentHttpController::planSemester(http::http_request& request, string stu
 
     web::json::value response = web::json::value::object();
     response["id"] = web::json::value::string(semesterId);
+
+    request.reply(http::status_codes::Created, response);
+    return;
+}
+
+void StudentHttpController::planSubjectAttempt(
+    http::http_request& request,
+    string studentId,
+    string semesterId
+) {
+    web::json::value body = request.extract_json().get();
+
+    string subjectId = body["subjectId"].as_string();
+
+    PlanSubjectAttempt handler(this->_studentRepository);
+    string attemptId = handler.execute(
+        studentId,
+        semesterId,
+        subjectId
+    );
+
+    web::json::value response = web::json::value::object();
+    response["id"] = web::json::value::string(attemptId);
 
     request.reply(http::status_codes::Created, response);
     return;

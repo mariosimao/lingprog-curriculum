@@ -4,7 +4,6 @@
 #include <ctime>
 #include <string>
 #include <vector>
-#include "Subject.h"
 #include "SubjectAttempt.h"
 
 using namespace std;
@@ -24,13 +23,21 @@ class StudentSemester
             boost::gregorian::date startDate,
             boost::gregorian::date endDate
         );
+        StudentSemester(
+            string id,
+            string name,
+            boost::gregorian::date startDate,
+            boost::gregorian::date endDate,
+            vector<SubjectAttempt> subjectAttempts
+        );
         string getId();
         string getName();
         boost::gregorian::date getStartDate();
         boost::gregorian::date getEndDate();
         vector<SubjectAttempt> getSubjectsAttempts();
         SubjectAttempt& findSubjectAttempt(string subjectId);
-        void planSubjectAttempt(string attemptId, Subject& subject);
+        bool attemptWithSubjectExists(string subjectId);
+        void planSubjectAttempt(string attemptId, string subjectId);
         void addGrade(string subjectId, float grade);
         void addProfessor(string subjectId, string professorName);
 };
