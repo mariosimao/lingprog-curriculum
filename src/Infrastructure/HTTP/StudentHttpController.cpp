@@ -65,15 +65,19 @@ http_response StudentHttpController::planSemester(http_request& request, string 
     boost::gregorian::date end(boost::gregorian::from_simple_string(endDate));
 
     PlanSemester handler(this->_studentRepository);
-    string semesterId = handler.execute(studentId, start, end);
+    StudentSemesterView semester = handler.execute(studentId, start, end);
 
     value responseBody = value::object();
-    responseBody["id"] = value::string(semesterId);
+    responseBody["id"] = value::string(semester.id);
+    responseBody["name"] = value::string(semester.name);
+    responseBody["startDate"] = value::string(semester.startDate);
+    responseBody["endDate"] = value::string(semester.endDate);
 
     http_response response(status_codes::Created);
     response.set_body(responseBody);
 
-    return response;}
+    return response;
+}
 
 http_response StudentHttpController::editSemester(
     http_request& request,

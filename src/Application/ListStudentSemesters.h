@@ -1,16 +1,10 @@
 #ifndef LIST_STUDENT_SEMESTERS_H
 #define LIST_STUDENT_SEMESTERS_H
 #include <string>
+#include "Views/StudentSemesterView.h"
 #include "../Domain/IStudentRepository.h"
 
 using namespace std;
-
-struct StudentSemesterView {
-    string id;
-    string name;
-    string startDate;
-    string endDate;
-};
 
 class ListStudentSemesters
 {

@@ -44,7 +44,7 @@ void StudentCliController::planSemester(vector<string> arguments)
 
     PlanSemester handler(this->_studentRepository);
 
-    string id = handler.execute(studentId, start, end);
+    handler.execute(studentId, start, end);
 
     cout << "Semester successfully planned.\n";
 
