@@ -9,7 +9,7 @@
 #include "../Persistence/SqlStudentRepository.h"
 #include "../Persistence/SqlSubjectRepository.h"
 
-using namespace std;
+using namespace web::json;
 
 StudentHttpController::StudentHttpController(
     IStudentRepository& studentRepository,
@@ -17,45 +17,46 @@ StudentHttpController::StudentHttpController(
 ): _studentRepository(studentRepository), _subjectRepository(subjectRepository)
 {}
 
-void StudentHttpController::registerStudent(http::http_request& request)
+http_response StudentHttpController::registerStudent(http_request& request)
 {
-    web::json::value body = request.extract_json().get();
+    value body = request.extract_json().get();
     string id = body["id"].as_string();
 
     RegisterStudent handler(this->_studentRepository);
     handler.execute(id);
 
-    request.reply(http::status_codes::Created);
-    return;
+    return http_response(status_codes::Created);
 }
 
-void StudentHttpController::listSemesters(http::http_request& request, string studentId)
+http_response StudentHttpController::listSemesters(http_request& request, string studentId)
 {
     ListStudentSemesters handler(this->_studentRepository);
     vector<StudentSemesterView> semesters = handler.execute(studentId);
 
-    web::json::value response = web::json::value::object();
-    response["semesters"] = web::json::value::array();
+    value responseBody = value::object();
+    responseBody["semesters"] = value::array();
 
     int i = 0;
     for (auto semester: semesters) {
-        web::json::value semesterJson = web::json::value::object();
-        semesterJson["id"] = web::json::value::string(semester.id);
-        semesterJson["name"] = web::json::value::string(semester.name);
-        semesterJson["startDate"] = web::json::value::string(semester.startDate);
-        semesterJson["endDate"] = web::json::value::string(semester.endDate);
+        value semesterJson = value::object();
+        semesterJson["id"] = value::string(semester.id);
+        semesterJson["name"] = value::string(semester.name);
+        semesterJson["startDate"] = value::string(semester.startDate);
+        semesterJson["endDate"] = value::string(semester.endDate);
 
-        response["semesters"][i] = semesterJson;
+        responseBody["semesters"][i] = semesterJson;
         i++;
     }
 
-    request.reply(http::status_codes::OK, response);
-    return;
+    http_response response(status_codes::OK);
+    response.set_body(responseBody);
+
+    return response;
 }
 
-void StudentHttpController::planSemester(http::http_request& request, string studentId)
+http_response StudentHttpController::planSemester(http_request& request, string studentId)
 {
-    web::json::value body = request.extract_json().get();
+    value body = request.extract_json().get();
 
     string startDate = body["startDate"].as_string();
     string endDate = body["endDate"].as_string();
@@ -66,19 +67,20 @@ void StudentHttpController::planSemester(http::http_request& request, string stu
     PlanSemester handler(this->_studentRepository);
     string semesterId = handler.execute(studentId, start, end);
 
-    web::json::value response = web::json::value::object();
-    response["id"] = web::json::value::string(semesterId);
+    value responseBody = value::object();
+    responseBody["id"] = value::string(semesterId);
 
-    request.reply(http::status_codes::Created, response);
-    return;
-}
+    http_response response(status_codes::Created);
+    response.set_body(responseBody);
 
-void StudentHttpController::editSemester(
-    http::http_request& request,
+    return response;}
+
+http_response StudentHttpController::editSemester(
+    http_request& request,
     string studentId,
     string semesterId
 ) {
-    web::json::value body = request.extract_json().get();
+    value body = request.extract_json().get();
 
     string name = body["name"].as_string();
     string startDate = body["startDate"].as_string();
@@ -96,28 +98,26 @@ void StudentHttpController::editSemester(
         end
     );
 
-    request.reply(http::status_codes::NoContent);
-    return;
+    return http_response(status_codes::NoContent);
 }
 
-void StudentHttpController::removeSemester(
-    http::http_request& request,
+http_response StudentHttpController::removeSemester(
+    http_request& request,
     string studentId,
     string semesterId
 ) {
     RemoveStudentSemester handler(this->_studentRepository);
     handler.execute(studentId, semesterId);
 
-    request.reply(http::status_codes::NoContent);
-    return;
+    return http_response(status_codes::NoContent);
 }
 
-void StudentHttpController::planSubjectAttempt(
-    http::http_request& request,
+http_response StudentHttpController::planSubjectAttempt(
+    http_request& request,
     string studentId,
     string semesterId
 ) {
-    web::json::value body = request.extract_json().get();
+    value body = request.extract_json().get();
 
     string subjectId = body["subjectId"].as_string();
 
@@ -128,9 +128,11 @@ void StudentHttpController::planSubjectAttempt(
         subjectId
     );
 
-    web::json::value response = web::json::value::object();
-    response["id"] = web::json::value::string(attemptId);
+    value responseBody = value::object();
+    responseBody["id"] = value::string(attemptId);
 
-    request.reply(http::status_codes::Created, response);
-    return;
+    http_response response(status_codes::OK);
+    response.set_body(responseBody);
+
+    return response;
 }

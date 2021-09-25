@@ -8,130 +8,63 @@
 #include "./src/Domain/DomainException.h"
 #include "./src/Infrastructure/Persistence/SqlStudentRepository.h"
 #include "./src/Infrastructure/Persistence/SqlSubjectRepository.h"
+#include "./src/Infrastructure/HTTP/Router.h"
 #include "./src/Infrastructure/HTTP/StudentHttpController.h"
 #include "./src/Infrastructure/HTTP/SubjectHttpController.h"
 
 using namespace std;
+using namespace web::http;
+using namespace web::json;
 
-void handleRequest(web::http::http_request request)
+void handleRequest(http_request request)
 {
     string route = request.request_uri().path();
-    vector<string> path = web::http::uri::split_path(route);
+    vector<string> path = uri::split_path(route);
     string method = request.method();
 
     cout << "[" << method << "] " << route << endl;
 
-    string connectionString = "host=localhost port=5432 dbname=my_curriculum user=my_curriculum password=password";
-    pqxx::connection connection(connectionString.c_str());
-
-    SqlStudentRepository studentRepository(connection);
-    SqlSubjectRepository subjectRepository(connection);
-
-    StudentHttpController studentController(studentRepository, subjectRepository);
-    SubjectHttpController subjectController(subjectRepository);
-
+    http_response response;
     try {
-        if (route == "/students") {
-            if (method == "POST") {
-                studentController.registerStudent(request);
-                return;
-            }
-        }
+        string connectionString = "host=localhost port=5432 dbname=my_curriculum user=my_curriculum password=password";
+        pqxx::connection connection(connectionString.c_str());
 
-        /* /student/:studentId/semester */
-        if (path.size() == 3 &&
-            path[0] == "students" &&
-            path[2] == "semesters"
-        ) {
-            string studentId = path[1];
+        SqlStudentRepository studentRepository(connection);
+        SqlSubjectRepository subjectRepository(connection);
 
-            if (method == "GET") {
-                studentController.listSemesters(request, studentId);
-                return;
-            } else if (method == "POST") {
-                studentController.planSemester(request, studentId);
-                return;
-            }
-        }
+        StudentHttpController studentController(studentRepository, subjectRepository);
+        SubjectHttpController subjectController(subjectRepository);
 
-        /* /students/:studentId/semesters/:semesterId */
-        if (path.size() == 4 &&
-            path[0] == "students" &&
-            path[2] == "semesters"
-        ) {
-            string studentId = path[1];
-            string semesterId = path[3];
+        response = Router::map(request, studentController, subjectController);
+    } catch (json_exception& e) {
+        value body = value::object();
+        body["error"] = value::object();
+        body["error"]["message"] = value::string("Invalid request body.");
 
-            if (method == "PUT") {
-                studentController.editSemester(
-                    request,
-                    studentId,
-                    semesterId
-                );
-                return;
-            } else if (method == "DELETE") {
-                studentController.removeSemester(
-                    request,
-                    studentId,
-                    semesterId
-                );
-                return;
-            }
-        }
-
-        /* /students/:studentId/semesters/:semesterId/subject-attempts */
-        if (path.size() == 5 &&
-            path[0] == "students" &&
-            path[2] == "semesters" &&
-            path[4] == "subject-attempts"
-        ) {
-            string studentId = path[1];
-            string semesterId = path[3];
-
-            if (method == "POST") {
-                studentController.planSubjectAttempt(
-                    request,
-                    studentId,
-                    semesterId
-                );
-                return;
-            }
-        }
-
-        if (route == "/subjects") {
-            if (method == "POST") {
-                subjectController.registerSubject(request);
-                return;
-            }
-        }
-
-        request.reply(web::http::status_codes::NotFound);
-    } catch (web::json::json_exception& e) {
-        web::json::value response = web::json::value::object();
-        response["error"] = web::json::value::object();
-        response["error"]["message"] = web::json::value::string(
-            "Invalid request body."
-        );
-
-        request.reply(web::http::status_codes::BadRequest, response);
+        response.set_body(body);
+        response.set_status_code(status_codes::BadRequest);
     } catch(DomainException& e) {
-        web::json::value response = web::json::value::object();
-        response["error"] = web::json::value::object();
-        response["error"]["message"] = web::json::value::string(e.what());
+        value body = value::object();
+        body["error"] = value::object();
+        body["error"]["message"] = value::string(e.what());
 
-        request.reply(web::http::status_codes::BadRequest, response);
+        response.set_body(body);
+        response.set_status_code(status_codes::BadRequest);
     } catch(std::exception& e) {
         cerr << e.what() << endl;
-        web::json::value response = web::json::value::object();
-        response["error"] = web::json::value::object();
-        response["error"]["message"] = web::json::value::string(
-            "Internal error."
-        );
+        value body = value::object();
+        body["error"] = value::object();
+        body["error"]["message"] = value::string("Internal error.");
 
-        request.reply(web::http::status_codes::InternalError, response);
+        response.set_body(body);
+        response.set_status_code(status_codes::InternalError);
     }
 
-    return;
+    response.headers().add("Access-Control-Allow-Origin", "*");
+    response.headers().add("Access-Control-Allow-Headers", "*");
+    response.headers().add("Access-Control-Allow-Methods", "*");
+
+    request.reply(response);
 }
 
 int main(int argc, char const *argv[])
@@ -145,10 +78,11 @@ int main(int argc, char const *argv[])
 
     address.append(":");
     address.append(port);
-    web::http::uri uri(address);
+    uri uri(address);
 
-    web::http::experimental::listener::http_listener httpListener(uri);
+    experimental::listener::http_listener httpListener(uri);
 
+    httpListener.support(methods::OPTIONS, handleRequest);
     httpListener.support(handleRequest);
 
     httpListener.open().wait();

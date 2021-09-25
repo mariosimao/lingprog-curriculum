@@ -4,14 +4,14 @@
 #include "SubjectHttpController.h"
 #include "../../Application/RegisterSubject.h"
 
-using namespace std;
+using namespace web::json;
 
 SubjectHttpController::SubjectHttpController(ISubjectRepository& subjectRepository):
     _subjectRepository(subjectRepository) {}
 
-void SubjectHttpController::registerSubject(http::http_request& request)
+http_response SubjectHttpController::registerSubject(http_request& request)
 {
-    web::json::value body = request.extract_json().get();
+    value body = request.extract_json().get();
     string code = body["code"].as_string();
     string name = body["name"].as_string();
     float credits = body["credits"].as_integer();
@@ -29,9 +29,11 @@ void SubjectHttpController::registerSubject(http::http_request& request)
     RegisterSubject handler(this->_subjectRepository);
     string id = handler.execute(code, name, credits, prerequisites, corequisites);
 
-    web::json::value response = web::json::value::object();
-    response["id"] = web::json::value::string(id);
+    value responseBody = value::object();
+    responseBody["id"] = value::string(id);
 
-    request.reply(http::status_codes::Created, response);
-    return;
+    http_response response(status_codes::Created);
+    response.set_body(responseBody);
+
+    return response;
 }

@@ -7,7 +7,7 @@
 #include "../../Domain/ISubjectRepository.h"
 
 using namespace std;
-namespace http = web::http;
+using namespace web::http;
 
 class StudentHttpController
 {
@@ -19,21 +19,21 @@ class StudentHttpController
             IStudentRepository& studentRepository,
             ISubjectRepository& subjectRepository
         );
-        void registerStudent(http::http_request& request);
-        void listSemesters(http::http_request& request, string studentId);
-        void planSemester(http::http_request& request, string studentId);
-        void editSemester(
-            http::http_request& request,
+        http_response registerStudent(http_request& request);
+        http_response listSemesters(http_request& request, string studentId);
+        http_response planSemester(http_request& request, string studentId);
+        http_response editSemester(
+            http_request& request,
             string studentId,
             string semesterId
         );
-        void removeSemester(
-            http::http_request& request,
+        http_response removeSemester(
+            http_request& request,
             string studentId,
             string semesterId
         );
-        void planSubjectAttempt(
-            http::http_request& request,
+        http_response planSubjectAttempt(
+            http_request& request,
             string studentId,
             string semesterId
         );

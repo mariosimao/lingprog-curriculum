@@ -5,7 +5,7 @@
 #include "../../Domain/ISubjectRepository.h"
 
 using namespace std;
-namespace http = web::http;
+using namespace web::http;
 
 class SubjectHttpController
 {
@@ -13,6 +13,6 @@ class SubjectHttpController
         ISubjectRepository& _subjectRepository;
     public:
         SubjectHttpController(ISubjectRepository& subjectRepository);
-        void registerSubject(http::http_request& request);
+        http_response registerSubject(http_request& request);
 };
 #endif
