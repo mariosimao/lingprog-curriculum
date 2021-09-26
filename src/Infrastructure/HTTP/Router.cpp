@@ -79,7 +79,9 @@ http_response Router::map(
     }
 
     if (route == "/subjects") {
-        if (method == "POST") {
+        if (method == "GET") {
+            return subjectController.listSubjects(request);
+        } else if (method == "POST") {
             return subjectController.registerSubject(request);
         }
     }

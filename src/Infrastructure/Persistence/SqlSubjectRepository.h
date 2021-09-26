@@ -13,6 +13,7 @@ class SqlSubjectRepository: public ISubjectRepository
         pqxx::connection& _connection;
     public:
         SqlSubjectRepository(pqxx::connection& connection);
+        vector<Subject> findAll();
         Subject findById(string subjectId);
         bool subjectCodeExists(string code);
         void save(Subject& subject);

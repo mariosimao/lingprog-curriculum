@@ -13,6 +13,7 @@ class SubjectHttpController
         ISubjectRepository& _subjectRepository;
     public:
         SubjectHttpController(ISubjectRepository& subjectRepository);
+        http_response listSubjects(http_request& request);
         http_response registerSubject(http_request& request);
 };
 #endif

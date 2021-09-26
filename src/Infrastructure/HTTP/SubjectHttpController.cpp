@@ -3,11 +3,38 @@
 
 #include "SubjectHttpController.h"
 #include "../../Application/RegisterSubject.h"
+#include "../../Application/ListSubjects.h"
 
 using namespace web::json;
 
 SubjectHttpController::SubjectHttpController(ISubjectRepository& subjectRepository):
     _subjectRepository(subjectRepository) {}
+
+http_response SubjectHttpController::listSubjects(http_request& request)
+{
+    ListSubjects handler(this->_subjectRepository);
+    vector<SubjectView> subjects = handler.execute();
+
+    value responseBody = value::object();
+    value subjectsArray = value::array();
+    int i = 0;
+    for (auto subject: subjects) {
+        value subjectJson = value::object();
+        subjectJson["id"] = value::string(subject.id);
+        subjectJson["code"] = value::string(subject.code);
+        subjectJson["name"] = value::string(subject.name);
+        subjectJson["credits"] = value::number(subject.credits);
+
+        subjectsArray[i] = subjectJson;
+        i++;
+    }
+    responseBody["subjects"] = subjectsArray;
+
+    http_response response(status_codes::OK);
+    response.set_body(responseBody);
+
+    return response;
+}
 
 http_response SubjectHttpController::registerSubject(http_request& request)
 {

@@ -12,6 +12,30 @@ SqlSubjectRepository::SqlSubjectRepository(
 ): _connection(connection)
 {}
 
+vector<Subject> SqlSubjectRepository::findAll()
+{
+    this->_connection.prepare(
+        "find_subject_ids",
+        "SELECT \
+            s.id \
+        FROM subject s"
+    );
+
+    pqxx::work transaction{this->_connection};
+
+    pqxx::result result  = transaction.exec_prepared("find_subject_ids");
+
+    transaction.commit();
+
+    vector<Subject> subjects;
+    for (auto row: result) {
+        Subject subject = this->findById(row[0].c_str());
+        subjects.push_back(subject);
+    }
+
+    return subjects;
+}
+
 Subject SqlSubjectRepository::findById(string subjectId)
 {
     this->_connection.prepare(
