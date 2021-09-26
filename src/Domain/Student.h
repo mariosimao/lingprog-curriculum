@@ -40,6 +40,7 @@ class Student
         );
         void removeSemester(string semesterId);
         void planSubjectAttempt(string attemptId, string semesterId, string subjectId);
+        void removeSubjectAttempt(string semesterId, string attemptId);
         void addGrade(string semesterId, string subjectId, float grade);
         void addProfessor(string semesterId, string subjectId, string professor);
 };

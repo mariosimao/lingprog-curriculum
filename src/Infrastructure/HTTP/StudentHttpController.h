@@ -42,5 +42,11 @@ class StudentHttpController
             string studentId,
             string semesterId
         );
+        http_response removeSubjectAttempt(
+            http_request& request,
+            string studentId,
+            string semesterId,
+            string attemptId
+        );
 };
 #endif

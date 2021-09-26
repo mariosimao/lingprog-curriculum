@@ -41,6 +41,7 @@ class StudentSemester
         void rename(string newName);
         void changeDates(date newStartDate, date newEndDate);
         void planSubjectAttempt(string attemptId, string subjectId);
+        void removeSubjectAttempt(string attemptId);
         void addGrade(string subjectId, float grade);
         void addProfessor(string subjectId, string professorName);
 };

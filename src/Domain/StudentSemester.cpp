@@ -101,6 +101,22 @@ void StudentSemester::planSubjectAttempt(string attemptId, string subjectId)
     this->_subjects.push_back(attempt);
 }
 
+void StudentSemester::removeSubjectAttempt(string attemptId)
+{
+    this->_subjects.erase(
+        remove_if(
+            this->_subjects.begin(),
+            this->_subjects.end(),
+            [attemptId](SubjectAttempt attempt) {
+                return attempt.getId() == attemptId;
+            }
+        ),
+        this->_subjects.end()
+    );
+
+    return;
+}
+
 void StudentSemester::addGrade(string subjectId, float grade)
 {
     SubjectAttempt attempt = this->findSubjectAttempt(subjectId);

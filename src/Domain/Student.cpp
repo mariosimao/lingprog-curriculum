@@ -95,6 +95,13 @@ void Student::planSubjectAttempt(
     semester.planSubjectAttempt(attemptId, subjectId);
 }
 
+void Student::removeSubjectAttempt(string semesterId, string attemptId)
+{
+    StudentSemester& semester = this->findStudentSemester(semesterId);
+
+    semester.removeSubjectAttempt(attemptId);
+}
+
 void Student::addGrade(string semesterId, string subjectId, float grade)
 {
     StudentSemester semester = this->findStudentSemester(semesterId);

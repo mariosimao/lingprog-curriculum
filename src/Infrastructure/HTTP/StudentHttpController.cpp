@@ -7,6 +7,7 @@
 #include "../../Application/PlanSubjectAttempt.h"
 #include "../../Application/RegisterStudent.h"
 #include "../../Application/RemoveStudentSemester.h"
+#include "../../Application/RemoveSubjectAttempt.h"
 #include "../Persistence/SqlStudentRepository.h"
 #include "../Persistence/SqlSubjectRepository.h"
 
@@ -171,5 +172,18 @@ http_response StudentHttpController::planSubjectAttempt(
     http_response response(status_codes::OK);
     response.set_body(responseBody);
 
+    return response;
+}
+
+http_response StudentHttpController::removeSubjectAttempt(
+    http_request& request,
+    string studentId,
+    string semesterId,
+    string attemptId
+) {
+    RemoveSubjectAttempt handler(this->_studentRepository);
+    handler.execute(studentId, semesterId, attemptId);
+
+    http_response response(status_codes::NoContent);
     return response;
 }

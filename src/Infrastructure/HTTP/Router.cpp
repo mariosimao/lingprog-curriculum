@@ -86,6 +86,25 @@ http_response Router::map(
         }
     }
 
+    if (path.size() == 6 &&
+        path[0] == "students" &&
+        path[2] == "semesters" &&
+        path[4] == "subject-attempts"
+    ) {
+        string studentId = path[1];
+        string semesterId = path[3];
+        string attemptId = path[5];
+
+        if (method == "DELETE") {
+            return studentController.removeSubjectAttempt(
+                request,
+                studentId,
+                semesterId,
+                attemptId
+            );
+        }
+    }
+
     if (route == "/subjects") {
         if (method == "GET") {
             return subjectController.listSubjects(request);
