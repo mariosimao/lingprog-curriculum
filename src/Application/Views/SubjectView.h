@@ -1,5 +1,5 @@
-#ifndef STUDENT_SEMESTER_VIEW_H
-#define STUDENT_SEMESTER_VIEW_H
+#ifndef SUBJECT_VIEW_H
+#define SUBJECT_VIEW_H
 
 #include <string>
 

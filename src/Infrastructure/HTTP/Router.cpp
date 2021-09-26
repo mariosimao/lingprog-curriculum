@@ -69,6 +69,14 @@ http_response Router::map(
         string studentId = path[1];
         string semesterId = path[3];
 
+        if (method == "GET") {
+            return studentController.listSubjectAttemptsBySemester(
+                request,
+                studentId,
+                semesterId
+            );
+        }
+
         if (method == "POST") {
             return studentController.planSubjectAttempt(
                 request,

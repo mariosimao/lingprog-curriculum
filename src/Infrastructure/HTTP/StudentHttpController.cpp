@@ -2,6 +2,7 @@
 #include "StudentHttpController.h"
 #include "../../Application/EditStudentSemester.h"
 #include "../../Application/ListStudentSemesters.h"
+#include "../../Application/ListSubjectAttemptsBySemester.h"
 #include "../../Application/PlanSemester.h"
 #include "../../Application/PlanSubjectAttempt.h"
 #include "../../Application/RegisterStudent.h"
@@ -114,6 +115,38 @@ http_response StudentHttpController::removeSemester(
     handler.execute(studentId, semesterId);
 
     return http_response(status_codes::NoContent);
+}
+
+http_response StudentHttpController::listSubjectAttemptsBySemester(
+    http_request& request,
+    string studentId,
+    string semesterId
+) {
+    ListSubjectAttemptsBySemester handler(this->_studentRepository);
+    vector<SubjectAttemptView> attempts = handler.execute(studentId, semesterId);
+
+    value responseBody = value::object();
+    value attemptsArray = value::array();
+    int i = 0;
+    for (auto attempt: attempts) {
+        value attemptJson = value::object();
+        attemptJson["id"] = value::string(attempt.id);
+        attemptJson["subjectId"] = value::string(attempt.subjectId);
+        attemptJson["professor"] = attempt.professor.empty() ?
+            value::null() : value::string(attempt.professor);
+        attemptJson["grade"] = (attempt.grade == -1) ?
+            value::null() : value::number(attempt.grade);
+
+        attemptsArray[i] = attemptJson;
+        i++;
+    }
+
+    responseBody["subjectAttempts"] = attemptsArray;
+
+    http_response response(status_codes::OK);
+    response.set_body(responseBody);
+
+    return response;
 }
 
 http_response StudentHttpController::planSubjectAttempt(

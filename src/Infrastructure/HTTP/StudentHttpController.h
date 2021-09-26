@@ -32,6 +32,11 @@ class StudentHttpController
             string studentId,
             string semesterId
         );
+        http_response listSubjectAttemptsBySemester(
+            http_request& request,
+            string studentId,
+            string semesterId
+        );
         http_response planSubjectAttempt(
             http_request& request,
             string studentId,
