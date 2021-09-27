@@ -102,18 +102,18 @@ void Student::removeSubjectAttempt(string semesterId, string attemptId)
     semester.removeSubjectAttempt(attemptId);
 }
 
-void Student::addGrade(string semesterId, string subjectId, float grade)
+void Student::changeGrade(string semesterId, string attemptId, float grade)
 {
-    StudentSemester semester = this->findStudentSemester(semesterId);
+    StudentSemester& semester = this->findStudentSemester(semesterId);
 
-    semester.addGrade(subjectId, grade);
+    semester.changeGrade(attemptId, grade);
 }
 
-void Student::addProfessor(string semesterId, string subjectId, string professor)
+void Student::changeProfessor(string semesterId, string attemptId, string professor)
 {
-    StudentSemester semester = this->findStudentSemester(semesterId);
+    StudentSemester& semester = this->findStudentSemester(semesterId);
 
-    semester.addProfessor(subjectId, professor);
+    semester.changeProfessor(attemptId, professor);
 }
 
 void Student::checkSemesterPeriod(

@@ -41,7 +41,7 @@ http_response SubjectHttpController::registerSubject(http_request& request)
     value body = request.extract_json().get();
     string code = body["code"].as_string();
     string name = body["name"].as_string();
-    float credits = body["credits"].as_integer();
+    int credits = body["credits"].as_integer();
 
     set<string> prerequisites;
     for (auto prerequisite: body["prerequisites"].as_array()) {

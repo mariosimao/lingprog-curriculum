@@ -37,12 +37,13 @@ class StudentSemester
         date getEndDate();
         vector<SubjectAttempt> getSubjectsAttempts();
         SubjectAttempt& findSubjectAttempt(string subjectId);
+        SubjectAttempt& findSubjectAttemptById(string attemptId);
         bool attemptWithSubjectExists(string subjectId);
         void rename(string newName);
         void changeDates(date newStartDate, date newEndDate);
         void planSubjectAttempt(string attemptId, string subjectId);
         void removeSubjectAttempt(string attemptId);
-        void addGrade(string subjectId, float grade);
-        void addProfessor(string subjectId, string professorName);
+        void changeGrade(string attemptId, float grade);
+        void changeProfessor(string attemptId, string professorName);
 };
 #endif

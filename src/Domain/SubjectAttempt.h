@@ -18,7 +18,7 @@ class SubjectAttempt
         string getSubjectId();
         string getProfessor();
         float getGrade();
-        void addProfessor(string professorName);
-        void addGrade(float grade);
+        void changeProfessor(string professorName);
+        void changeGrade(float grade);
 };
 #endif

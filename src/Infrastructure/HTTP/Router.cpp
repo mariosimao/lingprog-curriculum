@@ -95,7 +95,14 @@ http_response Router::map(
         string semesterId = path[3];
         string attemptId = path[5];
 
-        if (method == "DELETE") {
+        if (method == "PUT") {
+            return studentController.editSubjectAttempt(
+                request,
+                studentId,
+                semesterId,
+                attemptId
+            );
+        } else if (method == "DELETE") {
             return studentController.removeSubjectAttempt(
                 request,
                 studentId,

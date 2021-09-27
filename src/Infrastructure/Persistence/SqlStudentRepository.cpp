@@ -130,14 +130,14 @@ void SqlStudentRepository::save(Student& student)
             $2, \
             $3, \
             CASE WHEN $4 = '' THEN NULL ELSE $4 END, \
-            CASE WHEN $5 = -1 THEN NULL ELSE $5 END \
+            CASE WHEN $5::FLOAT = -1 THEN NULL ELSE $5::FLOAT END \
         ) \
         ON CONFLICT ON CONSTRAINT subject_attempt_pK DO \
         UPDATE SET \
         semester_id = $2, \
         subject_id = $3, \
         professor = CASE WHEN $4 = '' THEN NULL ELSE $4 END, \
-        grade = CASE WHEN $5 = -1 THEN NULL ELSE $5 END \
+        grade = CASE WHEN $5::FLOAT = -1 THEN NULL ELSE $5::FLOAT END \
         WHERE subject_attempt.id = $1;"
     );
 
@@ -180,7 +180,7 @@ void SqlStudentRepository::save(Student& student)
                     semester.getId(),
                     attempt.getSubjectId(),
                     attempt.getProfessor(),
-                    attempt.getGrade()
+                    to_string(attempt.getGrade())
                 );
             }
 

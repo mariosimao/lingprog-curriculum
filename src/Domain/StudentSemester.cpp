@@ -66,6 +66,17 @@ SubjectAttempt& StudentSemester::findSubjectAttempt(string subjectId)
     throw DomainException("Subject attempt not found");
 }
 
+SubjectAttempt& StudentSemester::findSubjectAttemptById(string attemptId)
+{
+    for (SubjectAttempt& attempt: this->_subjects) {
+        if (attempt.getId() == attemptId) {
+            return attempt;
+        }
+    }
+
+    throw DomainException("Subject attempt not found");
+}
+
 bool StudentSemester::attemptWithSubjectExists(string subjectId)
 {
     for (SubjectAttempt attempt: this->_subjects) {
@@ -117,18 +128,18 @@ void StudentSemester::removeSubjectAttempt(string attemptId)
     return;
 }
 
-void StudentSemester::addGrade(string subjectId, float grade)
+void StudentSemester::changeGrade(string attemptId, float grade)
 {
-    SubjectAttempt attempt = this->findSubjectAttempt(subjectId);
+    SubjectAttempt& attempt = this->findSubjectAttemptById(attemptId);
 
-    attempt.addGrade(grade);
+    attempt.changeGrade(grade);
 }
 
-void StudentSemester::addProfessor(string subjectId, string professorName)
+void StudentSemester::changeProfessor(string attemptId, string professorName)
 {
-    SubjectAttempt attempt = this->findSubjectAttempt(subjectId);
+    SubjectAttempt& attempt = this->findSubjectAttemptById(attemptId);
 
-    attempt.addProfessor(professorName);
+    attempt.changeProfessor(professorName);
 }
 
 void StudentSemester::checkPeriod(date newStartDate, date newEndDate)

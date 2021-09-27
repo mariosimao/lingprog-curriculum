@@ -43,12 +43,12 @@ float SubjectAttempt::getGrade()
     return this->_grade;
 }
 
-void SubjectAttempt::addProfessor(string professorName)
+void SubjectAttempt::changeProfessor(string professorName)
 {
     this->_professor = professorName;
 }
 
-void SubjectAttempt::addGrade(float grade)
+void SubjectAttempt::changeGrade(float grade)
 {
     this->_grade = grade;
 }

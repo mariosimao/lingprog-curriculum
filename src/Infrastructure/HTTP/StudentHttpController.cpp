@@ -1,6 +1,7 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include "StudentHttpController.h"
 #include "../../Application/EditStudentSemester.h"
+#include "../../Application/EditSubjectAttempt.h"
 #include "../../Application/ListStudentSemesters.h"
 #include "../../Application/ListSubjectAttemptsBySemester.h"
 #include "../../Application/PlanSemester.h"
@@ -172,6 +173,24 @@ http_response StudentHttpController::planSubjectAttempt(
     http_response response(status_codes::OK);
     response.set_body(responseBody);
 
+    return response;
+}
+
+http_response StudentHttpController::editSubjectAttempt(
+    http_request& request,
+    string studentId,
+    string semesterId,
+    string attemptId
+) {
+    value body = request.extract_json().get();
+
+    string newProfessor = body["professor"].is_null() ? "" : body["professor"].as_string();
+    float newGrade = body["grade"].is_null() ? -1 : body["grade"].as_double();
+
+    EditSubjectAttempt handler(this->_studentRepository);
+    handler.execute(studentId, semesterId, attemptId, newProfessor, newGrade);
+
+    http_response response(status_codes::NoContent);
     return response;
 }
 
