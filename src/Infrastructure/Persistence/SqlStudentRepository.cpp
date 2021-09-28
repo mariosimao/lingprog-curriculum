@@ -187,20 +187,13 @@ void SqlStudentRepository::save(Student& student)
             if (attemptsIds.empty()) {
                 transaction.exec(
                     "DELETE FROM subject_attempt \
-                    WHERE semester_id IN ( \
-                        SELECT id \
-                        FROM student_semester \
-                        WHERE student_id = '" + transaction.esc(student.getId()) + "' \
-                    );"
+                    WHERE semester_id = '" + transaction.esc(semester.getId()) + "';"
                 );
             } else {
                 transaction.exec(
                     "DELETE FROM subject_attempt \
-                    WHERE semester_id IN ( \
-                        SELECT id \
-                        FROM student_semester \
-                        WHERE student_id = '" + transaction.esc(student.getId()) + "' \
-                    ) AND id NOT IN (" + attemptsIds + ");"
+                    WHERE semester_id = '" + transaction.esc(semester.getId()) + "' \
+                    AND id NOT IN (" + attemptsIds + ");"
                 );
             }
         }
