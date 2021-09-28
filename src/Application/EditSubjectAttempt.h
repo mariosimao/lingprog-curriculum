@@ -16,7 +16,8 @@ class EditSubjectAttempt
             string semesterId,
             string attemptId,
             string newProfessor,
-            float newGrade
+            float newGrade,
+            string newSemesterId
         );
 };
 #endif

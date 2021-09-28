@@ -101,13 +101,11 @@ void StudentSemester::changeDates(date newStartDate, date newEndDate)
     this->_endDate = newEndDate;
 }
 
-void StudentSemester::planSubjectAttempt(string attemptId, string subjectId)
+void StudentSemester::addSubjectAttempt(SubjectAttempt& attempt)
 {
-    if (this->attemptWithSubjectExists(subjectId)) {
+    if (this->attemptWithSubjectExists(attempt.getSubjectId())) {
         throw DomainException("A subject can not be attempted twice on a semester.");
     }
-
-    SubjectAttempt attempt(attemptId, subjectId);
 
     this->_subjects.push_back(attempt);
 }
@@ -128,14 +126,14 @@ void StudentSemester::removeSubjectAttempt(string attemptId)
     return;
 }
 
-void StudentSemester::changeGrade(string attemptId, float grade)
+void StudentSemester::changeSubjectGrade(string attemptId, float grade)
 {
     SubjectAttempt& attempt = this->findSubjectAttemptById(attemptId);
 
     attempt.changeGrade(grade);
 }
 
-void StudentSemester::changeProfessor(string attemptId, string professorName)
+void StudentSemester::changeSubjectProfessor(string attemptId, string professorName)
 {
     SubjectAttempt& attempt = this->findSubjectAttemptById(attemptId);
 

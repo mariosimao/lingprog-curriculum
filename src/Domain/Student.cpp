@@ -92,7 +92,9 @@ void Student::planSubjectAttempt(
 ) {
     StudentSemester& semester = this->findStudentSemester(semesterId);
 
-    semester.planSubjectAttempt(attemptId, subjectId);
+    SubjectAttempt attempt(attemptId, subjectId);
+
+    semester.addSubjectAttempt(attempt);
 }
 
 void Student::removeSubjectAttempt(string semesterId, string attemptId)
@@ -102,18 +104,33 @@ void Student::removeSubjectAttempt(string semesterId, string attemptId)
     semester.removeSubjectAttempt(attemptId);
 }
 
-void Student::changeGrade(string semesterId, string attemptId, float grade)
+void Student::changeSubjectGrade(string semesterId, string attemptId, float grade)
 {
     StudentSemester& semester = this->findStudentSemester(semesterId);
 
-    semester.changeGrade(attemptId, grade);
+    semester.changeSubjectGrade(attemptId, grade);
 }
 
-void Student::changeProfessor(string semesterId, string attemptId, string professor)
+void Student::changeSubjectProfessor(string semesterId, string attemptId, string professor)
 {
     StudentSemester& semester = this->findStudentSemester(semesterId);
 
-    semester.changeProfessor(attemptId, professor);
+    semester.changeSubjectProfessor(attemptId, professor);
+}
+
+void Student::moveSubjectAttempt(string oldSemesterId, string attemptId, string newSemesterId)
+{
+    if (oldSemesterId == newSemesterId) {
+        return;
+    }
+
+    StudentSemester& oldSemester = this->findStudentSemester(oldSemesterId);
+    StudentSemester& newSemester = this->findStudentSemester(newSemesterId);
+
+    SubjectAttempt& attempt = oldSemester.findSubjectAttemptById(attemptId);
+
+    newSemester.addSubjectAttempt(attempt);
+    oldSemester.removeSubjectAttempt(attemptId);
 }
 
 void Student::checkSemesterPeriod(

@@ -41,7 +41,8 @@ class Student
         void removeSemester(string semesterId);
         void planSubjectAttempt(string attemptId, string semesterId, string subjectId);
         void removeSubjectAttempt(string semesterId, string attemptId);
-        void changeGrade(string semesterId, string attemptId, float grade);
-        void changeProfessor(string semesterId, string attemptId, string professor);
+        void changeSubjectGrade(string semesterId, string attemptId, float grade);
+        void changeSubjectProfessor(string semesterId, string attemptId, string professor);
+        void moveSubjectAttempt(string oldSemesterId, string attemptId, string newSemesterId);
 };
 #endif

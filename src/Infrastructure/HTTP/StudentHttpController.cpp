@@ -186,9 +186,10 @@ http_response StudentHttpController::editSubjectAttempt(
 
     string newProfessor = body["professor"].is_null() ? "" : body["professor"].as_string();
     float newGrade = body["grade"].is_null() ? -1 : body["grade"].as_double();
+    string newSemesterId = body["semesterId"].as_string();
 
     EditSubjectAttempt handler(this->_studentRepository);
-    handler.execute(studentId, semesterId, attemptId, newProfessor, newGrade);
+    handler.execute(studentId, semesterId, attemptId, newProfessor, newGrade, newSemesterId);
 
     http_response response(status_codes::NoContent);
     return response;

@@ -41,9 +41,9 @@ class StudentSemester
         bool attemptWithSubjectExists(string subjectId);
         void rename(string newName);
         void changeDates(date newStartDate, date newEndDate);
-        void planSubjectAttempt(string attemptId, string subjectId);
+        void addSubjectAttempt(SubjectAttempt& attempt);
         void removeSubjectAttempt(string attemptId);
-        void changeGrade(string attemptId, float grade);
-        void changeProfessor(string attemptId, string professorName);
+        void changeSubjectGrade(string attemptId, float grade);
+        void changeSubjectProfessor(string attemptId, string professorName);
 };
 #endif
