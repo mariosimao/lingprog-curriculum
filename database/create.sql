@@ -55,10 +55,12 @@ CREATE TABLE subject_attempt
             PRIMARY KEY,
     semester_id UUID
         CONSTRAINT subject_attempt_student_semester_id_fk
-            REFERENCES student_semester,
+            REFERENCES student_semester
+                ON DELETE CASCADE,
     subject_id  UUID
         CONSTRAINT subject_attempt_subject_id_fk
-            REFERENCES subject,
+            REFERENCES subject
+                ON DELETE CASCADE,
     professor   VARCHAR(100),
     grade       DOUBLE PRECISION
 );
