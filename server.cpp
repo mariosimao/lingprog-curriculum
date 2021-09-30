@@ -26,7 +26,7 @@ void handleRequest(http_request request)
 
     http_response response;
     try {
-        string connectionString = "host=localhost port=5432 dbname=my_curriculum user=my_curriculum password=password";
+        string connectionString = "host=kesavan.db.elephantsql.com port=5432 dbname=zmtyiekd user=zmtyiekd password=M9Ak4_OZOTwjWt_A6AvNFx87uGc2_f7q";
         pqxx::connection connection(connectionString.c_str());
 
         SqlStudentRepository studentRepository(connection);
