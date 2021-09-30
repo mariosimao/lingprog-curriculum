@@ -17,8 +17,8 @@ WORKDIR /usr/src/my-curriculum
 
 RUN make clean && make server
 
-EXPOSE 80
+ENV PORT=80
 
-USER root
+EXPOSE ${PORT}
 
-CMD ["./server", "http://0.0.0.0", "80"]
+CMD ["./server", "http://0.0.0.0", ${PORT}]
