@@ -19,4 +19,4 @@ RUN make clean && make server
 
 EXPOSE 80
 
-CMD ["./server", "http://localhost", "80"]
+CMD ["./server", "http://0.0.0.0", "80"]
