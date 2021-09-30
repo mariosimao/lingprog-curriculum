@@ -87,11 +87,8 @@ int main(int argc, char const *argv[])
 
     httpListener.open().wait();
     cout << "Listening on " << address << endl;
-    cout << "Press ENTER to exit." << endl;
 
-    string line;
-    getline(cin, line);
+    while (true);
 
-    httpListener.close();
     return 0;
 }
