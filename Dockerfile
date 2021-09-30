@@ -21,4 +21,4 @@ ENV PORT=80
 
 EXPOSE $PORT
 
-ENTRYPOINT "./server" "http://0.0.0.0" $PORT
+ENTRYPOINT ./server "http://0.0.0.0" "$PORT"
