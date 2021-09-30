@@ -19,4 +19,6 @@ RUN make clean && make server
 
 EXPOSE 80
 
+USER root
+
 CMD ["./server", "http://0.0.0.0", "80"]
