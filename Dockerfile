@@ -19,6 +19,6 @@ RUN make clean && make server
 
 ENV PORT=80
 
-EXPOSE ${PORT}
+EXPOSE $PORT
 
-CMD ["./server", "http://0.0.0.0", ${PORT}]
+ENTRYPOINT "./server" "http://0.0.0.0" $PORT
