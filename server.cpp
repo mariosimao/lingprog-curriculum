@@ -69,6 +69,10 @@ void handleRequest(http_request request)
 
 int main(int argc, char const *argv[])
 {
+    cout << argv[0] << endl;
+    cout << argv[1] << endl;
+    cout << argv[2] << endl;
+
     if (argc < 3) {
         cerr << "Missing arguments. Usage: server <address> <port>" << endl;
         return 1;
