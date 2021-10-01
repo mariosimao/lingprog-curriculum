@@ -15,5 +15,6 @@ class SubjectHttpController
         SubjectHttpController(ISubjectRepository& subjectRepository);
         http_response listSubjects(http_request& request);
         http_response registerSubject(http_request& request);
+        http_response removeSubject(http_request& request, string subjectId);
 };
 #endif

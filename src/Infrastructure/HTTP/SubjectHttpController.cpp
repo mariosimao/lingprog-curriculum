@@ -4,6 +4,7 @@
 #include "SubjectHttpController.h"
 #include "../../Application/RegisterSubject.h"
 #include "../../Application/ListSubjects.h"
+#include "../../Application/RemoveSubject.h"
 
 using namespace web::json;
 
@@ -61,6 +62,16 @@ http_response SubjectHttpController::registerSubject(http_request& request)
 
     http_response response(status_codes::Created);
     response.set_body(responseBody);
+
+    return response;
+}
+
+http_response SubjectHttpController::removeSubject(http_request& request, string subjectId)
+{
+    RemoveSubject handler(this->_subjectRepository);
+    handler.execute(subjectId);
+
+    http_response response(status_codes::NoContent);
 
     return response;
 }

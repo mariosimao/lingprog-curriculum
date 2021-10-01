@@ -120,5 +120,15 @@ http_response Router::map(
         }
     }
 
+    if (path.size() == 2 &&
+        path[0] == "subjects"
+    ) {
+        string subjectId = path[1];
+
+        if (method == "DELETE") {
+            return subjectController.removeSubject(request, subjectId);
+        }
+    }
+
     return http_response(status_codes::NotFound);
 }
