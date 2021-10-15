@@ -42,8 +42,6 @@ void Student::planSemester(
     boost::gregorian::date startDate,
     boost::gregorian::date endDate
 ) {
-    // TODO: check if semester already exists
-
     this->checkSemesterPeriod(startDate, endDate);
 
     int year = startDate.year();
